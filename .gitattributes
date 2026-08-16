@@ -1,12 +1,15 @@
 # =====================================================================
-# GitHub Linguist Configuration
-# Treat downloaded statutory legal acts and static UI assets as vendored/data
-# so that the repository correctly displays as Python in language stats.
+# GitHub Linguist Overrides
+# Force GitHub Linguist to ignore statutory HTML acts and json benchmarks
+# so that the repository language breakdown accurately reflects Python.
 # =====================================================================
 
-data/pobrane_ustawy/* linguist-vendored
-data/pobrane_ustawy/** linguist-vendored
-static/pobrane_ustawy/* linguist-vendored
-static/pobrane_ustawy/** linguist-vendored
-ui.html linguist-documentation
-eval_results.json linguist-generated
+*.html linguist-detectable=false
+*.html linguist-vendored=true
+*.json linguist-detectable=false
+data/** linguist-vendored=true
+data/** linguist-detectable=false
+static/** linguist-vendored=true
+static/** linguist-detectable=false
+ui.html linguist-detectable=false
+eval_results.json linguist-detectable=false
