@@ -1,0 +1,294 @@
+{
+  "timestamp": "2026-07-30 12:45:26",
+  "total_questions": 15,
+  "elapsed_seconds": 311.23,
+  "metrics": {
+    "hit_rate_at_1": 0.7333,
+    "hit_rate_at_3": 0.7333,
+    "hit_rate_at_5": 0.7333,
+    "mrr": 0.7333,
+    "faithfulness": 0.662
+  },
+  "detailed_results": [
+    {
+      "id": 1,
+      "category": "PIT/CIT - Amortyzacja",
+      "query": "Jaki jest limit wartości początkowej samochodów osobowych spalinowych dla odpisów amortyzacyjnych zaliczanych do KUP?",
+      "expected_act": [
+        "PIT",
+        "CIT"
+      ],
+      "expected_articles": [
+        "23",
+        "16"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.47,
+      "top_retrieved_article": "CIT Art. 16 ust. 1 pkt 4 (Rozdział 3\nKoszty uzyskania przychodów)",
+      "top_rerank_score": 0.7309
+    },
+    {
+      "id": 2,
+      "category": "VAT - Pojazdy Mieszane",
+      "query": "Ile wynosi odliczenie podatku naliczonego VAT od wydatków eksploatacyjnych i paliwa dla samochodu osobowego używanego w trybie mieszanym?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "86a"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.47,
+      "top_retrieved_article": "VAT Art. 86a ust. 1 pkt 1 (Rozdział 1\nOdliczenie i zwrot podatku)",
+      "top_rerank_score": 0.7309
+    },
+    {
+      "id": 3,
+      "category": "VAT - Split Payment",
+      "query": "W jakich sytuacjach i dla jakich transakcji powyżej 15 tys. zł brutto występuje obowiązek stosowania Mechanizmu Podzielonej Płatności?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "108a"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.73,
+      "top_retrieved_article": "VAT Art. 108a ust. 1 pkt 122 (Rozdział 1a\nMechanizm podzielonej płatności)",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 4,
+      "category": "UoR - Księgi Rachunkowe",
+      "query": "Przy jakim limicie przychodów netto ze sprzedaży powstaje obowiązek prowadzenia pełnych ksiąg rachunkowych wg Ustawy o Rachunkowości?",
+      "expected_act": [
+        "UOR",
+        "PIT"
+      ],
+      "expected_articles": [
+        "2",
+        "24a"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.73,
+      "top_retrieved_article": "UOR Art. 28b (Rozdział 4\nWycena aktywów i pasywów oraz ustalenie wyniku finansowego)",
+      "top_rerank_score": 0.7309
+    },
+    {
+      "id": 5,
+      "category": "PIT - Zaliczki",
+      "query": "Do którego dnia miesiąca podatnik PIT prowadzący działalność ma obowiązek wpłacać miesięczną zaliczkę na podatek dochodowy?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "44"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.47,
+      "top_retrieved_article": "PIT Art. 44 ust. 1 pkt 1 (Rozdział 7\nPobór podatku lub zaliczek na podatek przez płatników)",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 6,
+      "category": "PIT/CIT - KUP",
+      "query": "Jaka jest ogólna definicja kosztów uzyskania przychodów i jakie wymogi musi spełniać wydatek, aby stanowić KUP?",
+      "expected_act": [
+        "PIT",
+        "CIT"
+      ],
+      "expected_articles": [
+        "22",
+        "15"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 1.0,
+      "top_retrieved_article": "PIT Art. 22 ust. 1 pkt 4 (Rozdział 4\nKoszty uzyskania przychodów)",
+      "top_rerank_score": 0.7307
+    },
+    {
+      "id": 7,
+      "category": "PIT/CIT - Ulga B+R",
+      "query": "Na czym polega ulga podatkowa na działalność badawczo-rozwojową B+R i jakie koszty kwalifikowane można dodatkowo odliczyć?",
+      "expected_act": [
+        "PIT",
+        "CIT"
+      ],
+      "expected_articles": [
+        "26e",
+        "18d"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.73,
+      "top_retrieved_article": "CIT Art. 18d ust. 1 pkt 3 (Rozdział 5\nPodstawa opodatkowania i wysokość podatku)",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 8,
+      "category": "PIT - Skala Podatkowa",
+      "query": "Jakie są stawki podatkowe w skali podatkowej PIT oraz kwota zmniejszająca podatek w pierwszym progu podatkowym?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "27"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 1.0,
+      "top_retrieved_article": "PIT Art. 27 (Rozdział 6\nPodstawa obliczenia i wysokość podatku)",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 9,
+      "category": "Ordynacja - JPK",
+      "query": "Kiedy i w jakiej formie organ podatkowy może żądać przekazania ksiąg podatkowych w postaci Jednolitego Pliku Kontrolnego JPK?",
+      "expected_act": [
+        "ORDYNACJA",
+        "VAT"
+      ],
+      "expected_articles": [
+        "193a",
+        "99"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "faithfulness": 0.47,
+      "top_retrieved_article": "ORDYNACJA Art. 183 (Rozdział 11\nDowody)",
+      "top_rerank_score": 0.7308
+    },
+    {
+      "id": 10,
+      "category": "UoR - Rzetelny Obraz",
+      "query": "Na czym polega nadrzędna zasada rzetelnego i jasnego obrazu sytuacji majątkowej i finansowej w Ustawie o Rachunkowości?",
+      "expected_act": [
+        "UOR"
+      ],
+      "expected_articles": [
+        "4"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.73,
+      "top_retrieved_article": "UOR Art. 4 (Rozdział 1\nPrzepisy ogólne)",
+      "top_rerank_score": 0.7309
+    },
+    {
+      "id": 11,
+      "category": "VAT - Kasy Rejestrujące",
+      "query": "W jakich przypadkach podatnicy świadczący usługi lub sprzedający towary na rzecz osób fizycznych mają obowiązek stosowania kasy rejestrującej?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "111"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.2,
+      "top_retrieved_article": "VAT Art. 111 ust. 1 pkt 130 (Rozdział 3\nKasy rejestrujące)",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 12,
+      "category": "PIT - Przychód z Działalności",
+      "query": "Co zdaniem ustawy o PIT stanowi przychód z pozarolniczej działalności gospodarczej?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "14"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "faithfulness": 1.0,
+      "top_retrieved_article": "PIT Art. 5b (Rozdział 1\nPodmiot i przedmiot opodatkowania)",
+      "top_rerank_score": 0.7306
+    },
+    {
+      "id": 13,
+      "category": "ZUS - Ubezpieczenia",
+      "query": "Kto podlega obowiązkowo ubezpieczeniom emerytalnemu i rentowym z tytułu prowadzenia pozarolniczej działalności wg Ustawy o ZUS?",
+      "expected_act": [
+        "ZUS"
+      ],
+      "expected_articles": [
+        "6"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "faithfulness": 1.0,
+      "top_retrieved_article": "ZUS Art. 13 ust. 1 pkt 4 (Rozdział 2\nZasady podlegania ubezpieczeniom społecznym)",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 14,
+      "category": "PP - Działalność Nierejestrowana",
+      "query": "Jakie warunki przychodowe należy spełnić, aby prowadzić działalność nierejestrowaną zgodnie z Prawem Przedsiębiorców?",
+      "expected_act": [
+        "PP"
+      ],
+      "expected_articles": [
+        "5"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "faithfulness": 0.2,
+      "top_retrieved_article": "PIT Art. 5b (Rozdział 1\nPodmiot i przedmiot opodatkowania)",
+      "top_rerank_score": 0.7188
+    },
+    {
+      "id": 15,
+      "category": "VAT - WIS",
+      "query": "Czym jest Wiążąca Informacja Stawkowa (WIS) i jaki organ ją wydaje dla potrzeb podatku VAT?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "42a"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "faithfulness": 0.73,
+      "top_retrieved_article": "VAT Art. 42a (Rozdział 1a\nWiążąca informacja stawkowa)",
+      "top_rerank_score": 0.731
+    }
+  ]
+}

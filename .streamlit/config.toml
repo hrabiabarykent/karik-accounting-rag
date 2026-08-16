@@ -1,0 +1,7 @@
+[server]
+enableStaticServing = true
+fileWatcherType = "none"
+headless = true
+
+[browser]
+gatherUsageStats = false

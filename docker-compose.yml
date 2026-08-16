@@ -1,0 +1,119 @@
+services:
+  redis-broker:
+    image: redis:7.2-alpine
+    container_name: karik-redis
+    ports:
+      - "${REDIS_PORT:-16379}:6379"
+    command: redis-server --appendonly no --maxmemory 512mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+    networks:
+      - karik-network
+
+  local-ai:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    container_name: karik-local-ai
+    volumes:
+      - ./models:/models
+    ports:
+      - "8088:8080"
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+    # Parameterization for multimodal Gemma 4 e4b
+    command: >
+      -m /models/gemma-4-E4B-it-Q4_K_M.gguf
+      --mmproj /models/mmproj-F16.gguf
+      --host 0.0.0.0
+      --port 8080
+      -c 131072
+      -ngl 99
+      --alias gemma4-e4b
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - karik-network
+
+  postgres-pgvector:
+    image: pgvector/pgvector:pg16
+    container_name: karik-postgres-rag
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-karik_db}
+      POSTGRES_USER: ${POSTGRES_USER:-karik_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-karik_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-karik_admin} -d $${POSTGRES_DB:-karik_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - karik-network
+
+  app-module:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: karik-gateway
+    ports:
+      - "8000:8000"
+    volumes:
+      - shared-storage:/tmp/accounting_storage
+    environment:
+      - REDIS_URL=redis://redis-broker:6379/0
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.1-flash-lite}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres-pgvector}
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-karik_db}
+      - POSTGRES_USER=${POSTGRES_USER:-karik_admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-karik_password}
+    depends_on:
+      - redis-broker
+      - postgres-pgvector
+    restart: unless-stopped
+    networks:
+      - karik-network
+
+  processing-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: karik-worker
+    command: celery -A tasks worker --loglevel=info -c 4
+    volumes:
+      - shared-storage:/tmp/accounting_storage
+    environment:
+      - REDIS_URL=redis://redis-broker:6379/0
+      - LOCAL_AI_URL=${LOCAL_AI_URL:-http://local-ai:8080/v1}
+      - LOCAL_AI_MODEL=${LOCAL_AI_MODEL:-gemma4-e4b}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.1-flash-lite}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres-pgvector}
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-karik_db}
+      - POSTGRES_USER=${POSTGRES_USER:-karik_admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-karik_password}
+    depends_on:
+      - redis-broker
+      - local-ai
+      - postgres-pgvector
+    restart: unless-stopped
+    networks:
+      - karik-network
+
+volumes:
+  shared-storage:
+  postgres-data:
+
+networks:
+  karik-network:
+    driver: bridge

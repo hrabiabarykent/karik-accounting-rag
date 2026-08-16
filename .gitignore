@@ -1,0 +1,49 @@
+# =====================================================================
+# Git Ignore Configuration for KARIK / Wolfik RAG
+# =====================================================================
+
+# 1. Środowisko i sekrety (BEZWZGLĘDNIE CHRONIONE PRZED WYCIEKIEM)
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# 2. Ciężkie wagi modeli AI (Pobierane zewnętrznie / HuggingFace)
+models/*.gguf
+models/*.bin
+models/*.safetensors
+models/*.pt
+models/*.onnx
+!models/.gitkeep
+
+# 3. Wirtualne środowiska Python
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# 4. Pamięć podręczna kompilacji i testów
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# 5. Dane tymczasowe kontenerów i bazy danych
+postgres-data/
+shared-storage/
+tmp/
+*.log
+
+# 6. Pliki systemowe i IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KARIK - Hybrydowy Moduł Księgowy - Panel RODO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --panel-border: rgba(255, 255, 255, 0.1);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.35rem;
+            border-radius: 12px;
+            border: 1px solid var(--panel-border);
+            width: fit-content;
+        }
+
+        .mode-btn {
+            padding: 0.65rem 1.25rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mode-btn.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 2rem;
+        }
+
+        .grid-manual-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 0.25rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .dropzone {
+            border: 2px dashed rgba(99, 102, 241, 0.4);
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .dropzone svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--panel-border);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem;
+            margin-top: 1.25rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, #0284c7 100%);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-copy {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid #10b981;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        .btn-copy:hover {
+            background: rgba(16, 185, 129, 0.3);
+        }
+
+        .results-tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid var(--panel-border);
+            margin-bottom: 1.25rem;
+        }
+
+        .results-tab-btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .results-tab-btn.active {
+            color: var(--accent-cyan);
+            border-bottom-color: var(--accent-cyan);
+        }
+
+        .content-display {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            min-height: 400px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-y: auto;
+            max-height: 520px;
+        }
+
+        /* Token Badges */
+        .token-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+        .token-nip { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid #10b981; }
+        .token-iban { background: rgba(6, 182, 212, 0.25); color: #38bdf8; border: 1px solid #06b6d4; }
+        .token-company { background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid #a855f7; }
+        .token-email { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid #f59e0b; }
+        .token-ksef { background: rgba(99, 102, 241, 0.25); color: #818cf8; border: 1px solid #6366f1; }
+        .token-default { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #ef4444; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .status-verified {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid #10b981;
+        }
+        .status-requires-review {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid #f59e0b;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .file-info { margin-top: 0.75rem; font-size: 0.85rem; color: var(--accent-cyan); word-break: break-all; }
+        .step-number { background: var(--primary); color: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1>KARIK - Panel RODO (Hybrydowy Moduł Księgowy)</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">
+                Anonimizacja lokalna (Presidio + Gemma SLM) & Deanonimizacja od wejścia do wyjścia
+            </p>
+        </div>
+    </div>
+
+    <!-- Przełącznik Trybów -->
+    <div class="mode-selector">
+        <button class="mode-btn active" id="mode-fast-btn" onclick="switchMainMode('fast')">
+            ⚡ Tryb Szybki (Tester Anonimizacji)
+        </button>
+        <button class="mode-btn" id="mode-manual-btn" onclick="switchMainMode('manual')">
+            👤 Tryb Ręczny dla Księgowego (Chat Online Copy/Paste)
+        </button>
+    </div>
+
+    <!-- TRYB SZYBKI (ISTNIEJĄCY) -->
+    <div id="fast-mode-container">
+        <div class="grid-layout">
+            <div class="card">
+                <div class="card-title">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    Wprowadzenie Faktury
+                </div>
+
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchInputTab('file')">Plik (PDF/PNG/JPG)</button>
+                    <button class="tab-btn" onclick="switchInputTab('text')">Wklej Tekst</button>
+                </div>
+
+                <div id="file-input-section">
+                    <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                        <p style="font-weight: 500;">Przeciągnij i upuść plik lub kliknij</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Obsługiwane: PDF, PNG, JPEG, KSeF XML</p>
+                        <input type="file" id="file-input" style="display: none;" accept=".pdf,.png,.jpg,.jpeg,.xml" onchange="handleFileSelect(this.files)">
+                    </div>
+                    <div class="file-info" id="file-info"></div>
+                </div>
+
+                <div id="text-input-section" style="display: none;">
+                    <textarea id="text-area" placeholder="Wklej treść faktury (z NIP, IBAN, kwotami)..."></textarea>
+                </div>
+
+                <button class="btn-submit" id="btn-submit" onclick="runAnonymizationTest()">
+                    <span>⚡ Uruchom Anonimizację RODO</span>
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="results-tabs">
+                    <button class="results-tab-btn active" onclick="switchResultTab('anonymized', this)">Zanonimizowany Tekst RODO</button>
+                    <button class="results-tab-btn" onclick="switchResultTab('mapping', this)">Słownik Mapowania (Redis)</button>
+                    <button class="results-tab-btn" onclick="switchResultTab('detokenized', this)">Wynik Detokenizacji</button>
+                    <button class="results-tab-btn" onclick="switchResultTab('original', this)">Oryginalny Tekst</button>
+                </div>
+
+                <div id="status-container"></div>
+
+                <div class="content-display" id="content-display">
+                    <span style="color: var(--text-muted); font-style: italic;">Wybierz plik lub wklej treść faktury i kliknij "Uruchom Anonimizację RODO"...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRYB RĘCZNY DLA KSIĘGOWEGO -->
+    <div id="manual-mode-container" style="display: none;">
+        <div class="grid-manual-layout">
+            
+            <!-- Krok 1: Wklejenie faktury i wygenerowanie promptu -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="step-number">1</span>
+                    KROK 1: Anonimizacja Faktury
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    Wklej treść surowej faktury. System zanonimizuje dane RODO (zamieni NIP-y, nazwy firm, adresy, e-maile na bezpieczne tokeny).
+                </p>
+
+                <textarea id="manual-invoice-text" style="height: 200px;" placeholder="Wklej treść faktury (z danymi sprzedawcy, nabywcy, NIP-em)..."></textarea>
+
+                <button class="btn-submit" id="btn-manual-anon" onclick="runManualAnonymize()">
+                    <span>🔒 1. Zanonimizuj Fakturę</span>
+                </button>
+
+                <div id="manual-step1-output" style="margin-top: 1.5rem; display: none;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--accent-cyan); display: block; margin-bottom: 0.5rem;">
+                        Zanonimizowana Faktura (Gotowa do skopiowania):
+                    </label>
+                    <textarea id="manual-prompt-display" style="height: 180px; background: rgba(15,23,42,0.8);" readonly></textarea>
+                    <button class="btn-copy" onclick="copyPromptToClipboard()">
+                        📋 Skopiuj Zanonimizowaną Fakturę do Schowka
+                    </button>
+                </div>
+            </div>
+
+            <!-- Krok 2: Wklejenie odpowiedzi i deanonimizacja -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="step-number">2</span>
+                    KROK 2: Wklejenie Odpowiedzi & Deanonimizacja
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    Wklej odpowiedź z ChatGPT / Gemini Web (JSON). System automatycznie przywróci prawdziwe dane RODO ze słownika.
+                </p>
+
+                <textarea id="manual-cloud-json" style="height: 200px;" placeholder="Wklej odpowiedź z chatu online (JSON)..."></textarea>
+
+                <button class="btn-submit btn-secondary" id="btn-manual-detokenize" onclick="runManualDetokenize()">
+                    <span>🔓 2. Odczytaj i Deanonimizuj Odpowiedź</span>
+                </button>
+
+                <div id="manual-step2-output" style="margin-top: 1.5rem; display: none;">
+                    <div id="manual-status-container"></div>
+                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--accent-green); display: block; margin-bottom: 0.5rem;">
+                        Ostateczna Dekretacja Księgowa (Przywrócone Dane RODO):
+                    </label>
+                    <div class="content-display" id="manual-result-display" style="min-height: 200px; max-height: 350px;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentInputTab = 'file';
+        let currentResultTab = 'anonymized';
+        let selectedFile = null;
+        let lastResponseData = null;
+        let activeMappingDict = null;
+
+        function switchMainMode(mode) {
+            if (mode === 'fast') {
+                document.getElementById('mode-fast-btn').classList.add('active');
+                document.getElementById('mode-manual-btn').classList.remove('active');
+                document.getElementById('fast-mode-container').style.display = 'block';
+                document.getElementById('manual-mode-container').style.display = 'none';
+            } else {
+                document.getElementById('mode-fast-btn').classList.remove('active');
+                document.getElementById('mode-manual-btn').classList.add('active');
+                document.getElementById('fast-mode-container').style.display = 'none';
+                document.getElementById('manual-mode-container').style.display = 'block';
+            }
+        }
+
+        function switchInputTab(tab) {
+            currentInputTab = tab;
+            document.querySelectorAll('.tab-buttons .tab-btn').forEach(b => b.classList.remove('active'));
+            if (tab === 'file') {
+                document.querySelectorAll('.tab-buttons .tab-btn')[0].classList.add('active');
+                document.getElementById('file-input-section').style.display = 'block';
+                document.getElementById('text-input-section').style.display = 'none';
+            } else {
+                document.querySelectorAll('.tab-buttons .tab-btn')[1].classList.add('active');
+                document.getElementById('file-input-section').style.display = 'none';
+                document.getElementById('text-input-section').style.display = 'block';
+            }
+        }
+
+        function switchResultTab(tab, btn) {
+            currentResultTab = tab;
+            document.querySelectorAll('.results-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderResultContent();
+        }
+
+        const dropzone = document.getElementById('dropzone');
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) { handleFileSelect(e.dataTransfer.files); }
+        });
+
+        function handleFileSelect(files) {
+            if (files.length > 0) {
+                selectedFile = files[0];
+                document.getElementById('file-info').innerText = `Wybrany plik: ${selectedFile.name} (${(selectedFile.size / 1024).toFixed(1)} KB)`;
+            }
+        }
+
+        async function runAnonymizationTest() {
+            const submitBtn = document.getElementById('btn-submit');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<div class="spinner"></div> Przetwarzanie Presidio + Gemma...`;
+
+            try {
+                let formData = new FormData();
+                if (currentInputTab === 'file') {
+                    if (!selectedFile) { alert("Proszę wybrać plik PDF/PNG/JPG."); return; }
+                    formData.append('file', selectedFile);
+                } else {
+                    const textVal = document.getElementById('text-area').value.trim();
+                    if (!textVal) { alert("Proszę wkleić treść faktury."); return; }
+                    const blob = new Blob([textVal], { type: 'text/plain' });
+                    formData.append('file', blob, 'faktura_testowa.pdf');
+                }
+
+                const response = await fetch('/v1/test/anonymize', { method: 'POST', body: formData });
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.detail || "Błąd podczas przetwarzania.");
+                }
+
+                lastResponseData = await response.json();
+                renderResultContent();
+            } catch (err) {
+                alert(`❌ Błąd: ${err.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>⚡ Uruchom Anonimizację RODO</span>`;
+            }
+        }
+
+        function renderResultContent() {
+            const display = document.getElementById('content-display');
+            const statusContainer = document.getElementById('status-container');
+            if (!lastResponseData) {
+                display.innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Wybierz plik lub wklej treść faktury i kliknij "Uruchom Anonimizację RODO"...</span>`;
+                statusContainer.innerHTML = '';
+                return;
+            }
+
+            if (lastResponseData.has_leftover_tokens) {
+                statusContainer.innerHTML = `<div class="status-badge status-requires-review">⚠️ STATUS: REQUIRES_MANUAL_VERIFICATION (Wykryto niepodmienione tokeny)</div>`;
+            } else {
+                statusContainer.innerHTML = `<div class="status-badge status-verified">✅ STATUS: VERIFIED (Wszystkie tokeny RODO przywrócone poprawnie)</div>`;
+            }
+
+            if (currentResultTab === 'anonymized') { display.innerHTML = highlightTokens(lastResponseData.anonymized_text); }
+            else if (currentResultTab === 'mapping') { display.innerHTML = syntaxHighlightJson(lastResponseData.mapping_dictionary); }
+            else if (currentResultTab === 'detokenized') { display.innerHTML = syntaxHighlightJson(lastResponseData.detokenization_test); }
+            else if (currentResultTab === 'original') { display.innerText = lastResponseData.original_text; }
+        }
+
+        // AKCJE TRYBU RĘCZNEGO dla Księgowego
+        async function runManualAnonymize() {
+            const rawText = document.getElementById('manual-invoice-text').value.trim();
+            if (!rawText) { alert("Proszę wkleić treść faktury w Kroku 1."); return; }
+
+            const btn = document.getElementById('btn-manual-anon');
+            btn.disabled = true;
+            btn.innerHTML = `<div class="spinner"></div> Anonimizowanie RODO...`;
+
+            try {
+                const response = await fetch('/v1/manual/anonymize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ raw_text: rawText })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.detail || "Błąd podczas anonimizacji.");
+                }
+
+                const data = await response.json();
+                activeMappingDict = data.mapping_dictionary;
+
+                document.getElementById('manual-prompt-display').value = data.anonymized_text;
+                document.getElementById('manual-step1-output').style.display = 'block';
+
+            } catch (err) {
+                alert(`❌ Błąd: ${err.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<span>🔒 1. Zanonimizuj Fakturę</span>`;
+            }
+        }
+
+        function copyPromptToClipboard() {
+            const promptText = document.getElementById('manual-prompt-display').value;
+            navigator.clipboard.writeText(promptText).then(() => {
+                alert("📋 Skopiowano zanonimizowaną fakturę do schowka! Wklej ją teraz do modelu online.");
+            }).catch(err => {
+                alert("Nie udało się automatycznie skopiować. Zaznacz tekst ręcznie i naciśnij Ctrl+C.");
+            });
+        }
+
+        async function runManualDetokenize() {
+            const cloudJsonText = document.getElementById('manual-cloud-json').value.trim();
+            if (!cloudJsonText) { alert("Proszę wkleić odpowiedź JSON z chatu online w Kroku 2."); return; }
+            if (!activeMappingDict) { alert("Brak aktywnego słownika mapowania. Najpierw wykonaj Krok 1 (Zanonimizuj)."); return; }
+
+            const btn = document.getElementById('btn-manual-detokenize');
+            btn.disabled = true;
+            btn.innerHTML = `<div class="spinner"></div> Deanonimizowanie danych RODO...`;
+
+            try {
+                const response = await fetch('/v1/manual/detokenize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cloud_json_text: cloudJsonText,
+                        mapping_dictionary: activeMappingDict
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.detail || "Błąd podczas deanonimizacji.");
+                }
+
+                const data = await response.json();
+                const display = document.getElementById('manual-result-display');
+                const statusContainer = document.getElementById('manual-status-container');
+
+                if (data.has_leftover_tokens) {
+                    statusContainer.innerHTML = `<div class="status-badge status-requires-review">⚠️ STATUS: REQUIRES_MANUAL_VERIFICATION (Wykryto niepodmienione tokeny)</div>`;
+                } else {
+                    statusContainer.innerHTML = `<div class="status-badge status-verified">✅ STATUS: VERIFIED (Dane RODO przywrócone poprawnie)</div>`;
+                }
+
+                if (data.mode === 'json') {
+                    display.innerHTML = syntaxHighlightJson(data.detokenized_result);
+                } else {
+                    display.innerText = data.detokenized_result;
+                }
+                document.getElementById('manual-step2-output').style.display = 'block';
+
+            } catch (err) {
+                alert(`❌ Błąd: ${err.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<span>🔓 2. Odczytaj i Deanonimizuj Odpowiedź</span>`;
+            }
+        }
+
+        function highlightTokens(text) {
+            if (!text) return '';
+            let escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return escaped.replace(/&lt;([A-Z0-9_]+)&gt;/g, (match, p1) => {
+                let cls = 'token-default';
+                if (p1.includes('NIP')) cls = 'token-nip';
+                else if (p1.includes('IBAN')) cls = 'token-iban';
+                else if (p1.includes('COMPANY')) cls = 'token-company';
+                else if (p1.includes('EMAIL')) cls = 'token-email';
+                else if (p1.includes('KSEF')) cls = 'token-ksef';
+                return `<span class="token-tag ${cls}">&lt;${p1}&gt;</span>`;
+            });
+        }
+
+        function syntaxHighlightJson(jsonObj) {
+            const str = JSON.stringify(jsonObj, null, 2);
+            return str.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'color: #38bdf8;';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) { cls = 'color: #a5b4fc; font-weight: 600;'; }
+                    else { cls = 'color: #34d399;'; }
+                } else if (/true|false/.test(match)) { cls = 'color: #fbbf24;'; }
+                else if (/null/.test(match)) { cls = 'color: #f87171;'; }
+                return `<span style="${cls}">${match}</span>`;
+            });
+        }
+    </script>
+</body>
+</html>

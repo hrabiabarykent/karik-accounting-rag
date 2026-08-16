@@ -1,0 +1,29 @@
+name: prompt_step_b
+description: "Ekspert ds. polskiej rachunkowości - dekretacja księgowa zanonimizowanego tekstu"
+template: |
+  Jesteś zaawansowanym systemem eksperckim ds. polskiej rachunkowości. Przeanalizuj poniższy, zanonimizowany tekst dokumentu i przygotuj dekretację księgową kosztu. Kategoryzacja musi opierać się o kontekst tokenów branżowych. Zachowaj wszystkie tokeny w niezmienionej formie.
+
+  Wygeneruj strukturę JSON:
+  {
+    "data_wystawienia": "YYYY-MM-DD",
+    "sprzedawca_token": "<COMPANY_NAME_1>",
+    "sprzedawca_nip_token": "<PL_NIP_1>",
+    "pozycje_faktury": [
+      {
+        "opis": "Zakup paliwa do samochodu służbowego",
+        "netto": 300.00,
+        "vat_stawka": "23%",
+        "vat_kwota": 69.00,
+        "brutto": 369.00,
+        "konto_wn": "401-02 (Zużycie paliwa)",
+        "konto_ma": "210 (Rozrachunki z dostawcami)"
+      }
+    ],
+    "podsumowanie": {
+      "suma_netto": 300.00,
+      "suma_vat": 69.00,
+      "suma_brutto": 369.00
+    },
+    "sugerowany_kod_gtu": "GTU_02",
+    "uzasadnienie_ksiegowe": "Koszt zakwalifikowany na podstawie profilu kontrahenta <COMPANY_NAME_1> jako koszt zużycia materiałów i energii."
+  }
