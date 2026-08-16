@@ -18,32 +18,32 @@ An asynchronous, hybrid accounting document processing system (PDF, PNG, JPEG, K
 
 ```mermaid
 graph TD
-    subgraph Input [Input: Polish Accounting Documents & Queries]
-        A[Invoice: PDF / JPG / PNG / KSeF XML FA_2]
-        Q[Polish Tax / Accounting Legal Query]
+    subgraph Input ["Input: Polish Accounting Documents & Queries"]
+        A["Invoice: PDF / JPG / PNG / KSeF XML FA_2"]
+        Q["Polish Tax / Accounting Legal Query"]
     end
 
-    subgraph GDPR / PII Anonymization Layer (Local Edge)
-        A --> B[Parser: KSeF XML / PDF / Vision OCR]
-        B --> C[Presidio + Polish Checksums NIP/PESEL/REGON/IBAN/KSeF]
-        C --> D[Local Gemma 4 SLM / llama.cpp CUDA]
-        D --> E[Mapping Dictionary in Redis RAM]
-        D --> F[Anonymized Text]
+    subgraph PrivacyLayer ["GDPR / PII Anonymization Layer (Local Edge)"]
+        A --> B["Parser: KSeF XML / PDF / Vision OCR"]
+        B --> C["Presidio + Polish Checksums NIP/PESEL/REGON/IBAN/KSeF"]
+        C --> D["Local Gemma 4 SLM / llama.cpp CUDA"]
+        D --> E["Mapping Dictionary in Redis RAM"]
+        D --> F["Anonymized Text"]
     end
 
-    subgraph Advanced RAG Engine (Polish Statutory Acts)
-        Q --> G[Polish Legal Query Expansion / HyDE]
-        G --> H[PostgreSQL pgvector: HNSW + Polish FTS RRF]
-        H --> I[Polish Cross-Encoder Reranker: roberta-v3]
-        I --> J[Gemini Context Caching: 30 min TTL]
+    subgraph RagEngine ["Advanced RAG Engine (Polish Statutory Acts)"]
+        Q --> G["Polish Legal Query Expansion / HyDE"]
+        G --> H["PostgreSQL pgvector: HNSW + Polish FTS RRF"]
+        H --> I["Polish Cross-Encoder Reranker: roberta-v3"]
+        I --> J["Gemini Context Caching: 30 min TTL"]
     end
 
-    subgraph Synthesis & Audit
-        F --> K[Google Gemini API: Polish Chart of Accounts & JSON Entry]
-        J --> L[Google Gemini API: Grounded Legal Response with Article Citations]
-        K --> M[Fault-Tolerant Detokenization in RAM]
-        M --> N[Model-as-an-Auditor Reconciliation Loop]
-        N --> O[Status: VERIFIED / REQUIRES_MANUAL_VERIFICATION]
+    subgraph AuditLayer ["Synthesis & Audit"]
+        F --> K["Google Gemini API: Polish Chart of Accounts & JSON Entry"]
+        J --> L["Google Gemini API: Grounded Legal Response with Article Citations"]
+        K --> M["Fault-Tolerant Detokenization in RAM"]
+        M --> N["Model-as-an-Auditor Reconciliation Loop"]
+        N --> O["Status: VERIFIED / REQUIRES_MANUAL_VERIFICATION"]
     end
 ```
 
