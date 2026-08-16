@@ -40,18 +40,22 @@ def mock_requests_post():
         yield mock_post
 
 @pytest.fixture(autouse=True)
-def mock_gemini_sdk(monkeypatch):
-    monkeypatch.setattr(tasks, "HAS_NEW_GENAI", False)
+def mock_gemini_client(monkeypatch):
+    mock_client = MagicMock()
+    mock_genai_module = MagicMock()
+    mock_genai_module.Client.return_value = mock_client
+    monkeypatch.setattr(tasks, "HAS_NEW_GENAI", True)
+    monkeypatch.setattr(tasks, "genai", mock_genai_module)
+    return mock_client
 
 @pytest.fixture
 def dummy_invoice_file(tmp_path):
-
     file_path = tmp_path / "invoice.jpg"
     with open(file_path, "wb") as f:
         f.write(b"mock-image-data")
     return str(file_path)
 
-def test_pipeline_success(dummy_invoice_file, mock_redis):
+def test_pipeline_success(dummy_invoice_file, mock_redis, mock_gemini_client):
     step_a_content = {
         "masked_text": "Firma <COMPANY_NAME_1> z NIP <PL_NIP_1> kupiła paliwo.",
         "mapping_dictionary": {
@@ -89,6 +93,7 @@ def test_pipeline_success(dummy_invoice_file, mock_redis):
     }
     mock_gemini_response = MagicMock()
     mock_gemini_response.text = json.dumps(step_b_content)
+    mock_gemini_client.models.generate_content.return_value = mock_gemini_response
 
     step_d_content = {
         "data_wystawienia": "2026-07-18",
@@ -118,14 +123,8 @@ def test_pipeline_success(dummy_invoice_file, mock_redis):
     mock_completion_d = MagicMock()
     mock_completion_d.choices = [mock_choice_d]
 
-    with patch.object(tasks.local_ai_client.chat.completions, 'create') as mock_openai_create, \
-         patch('google.generativeai.GenerativeModel') as mock_gemini_model:
-        
+    with patch.object(tasks.local_ai_client.chat.completions, 'create') as mock_openai_create:
         mock_openai_create.side_effect = [mock_completion_a, mock_completion_d]
-        
-        mock_model_instance = MagicMock()
-        mock_model_instance.generate_content.return_value = mock_gemini_response
-        mock_gemini_model.return_value = mock_model_instance
         
         result = tasks.process_invoice_task("test_task_id_123", dummy_invoice_file)
         
@@ -137,7 +136,7 @@ def test_pipeline_success(dummy_invoice_file, mock_redis):
         assert f"mask:test_task_id_123" not in mock_redis.store
         assert not os.path.exists(dummy_invoice_file)
 
-def test_pipeline_fail_safe(dummy_invoice_file, mock_redis):
+def test_pipeline_fail_safe(dummy_invoice_file, mock_redis, mock_gemini_client):
     step_a_content = {
         "masked_text": "Firma <COMPANY_NAME_1> z NIP <PL_NIP_1> kupiła paliwo.",
         "mapping_dictionary": {
@@ -161,15 +160,10 @@ def test_pipeline_fail_safe(dummy_invoice_file, mock_redis):
     }
     mock_gemini_response = MagicMock()
     mock_gemini_response.text = json.dumps(step_b_content)
+    mock_gemini_client.models.generate_content.return_value = mock_gemini_response
 
-    with patch.object(tasks.local_ai_client.chat.completions, 'create') as mock_openai_create, \
-         patch('google.generativeai.GenerativeModel') as mock_gemini_model:
-        
+    with patch.object(tasks.local_ai_client.chat.completions, 'create') as mock_openai_create:
         mock_openai_create.side_effect = [mock_completion_a, Exception("OOM or timeout in Step D")]
-        
-        mock_model_instance = MagicMock()
-        mock_model_instance.generate_content.return_value = mock_gemini_response
-        mock_gemini_model.return_value = mock_model_instance
         
         result = tasks.process_invoice_task("test_task_id_456", dummy_invoice_file)
         

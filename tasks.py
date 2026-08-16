@@ -27,6 +27,8 @@ try:
     from google.genai import types
     HAS_NEW_GENAI = True
 except ImportError:
+    genai = None
+    types = None
     HAS_NEW_GENAI = False
 
 
@@ -172,21 +174,24 @@ def process_invoice_task(self, task_id: str, file_path: str):
         logger.info(f"Task {task_id}: Starting Step B (Gemini API) using model {GEMINI_MODEL_NAME}...")
         gemini_prompt = f"{PROMPT_STEP_B}\n\nTekst wejściowy:\n{masked_text}"
 
-        if HAS_NEW_GENAI and GEMINI_API_KEY:
-            client = genai.Client(api_key=GEMINI_API_KEY)
+        if HAS_NEW_GENAI:
+            client = genai.Client(api_key=GEMINI_API_KEY or "dummy_key")
+            gen_config = types.GenerateContentConfig(response_mime_type="application/json") if (types and hasattr(types, "GenerateContentConfig")) else {"response_mime_type": "application/json"}
             cloud_response = client.models.generate_content(
                 model=GEMINI_MODEL_NAME,
                 contents=gemini_prompt,
-                config=types.GenerateContentConfig(response_mime_type="application/json")
+                config=gen_config
             )
             raw_cloud_json = cloud_response.text
-        else:
+        elif gemini is not None:
             gemini_model = gemini.GenerativeModel(GEMINI_MODEL_NAME)
             cloud_response = gemini_model.generate_content(
                 gemini_prompt,
                 generation_config={"response_mime_type": "application/json"}
             )
             raw_cloud_json = cloud_response.text
+        else:
+            raise RuntimeError("Brak zainstalowanego pakietu SDK dla Gemini (google-genai)")
 
         accounting_cloud_json = json.loads(raw_cloud_json)
 
