@@ -66,8 +66,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - shared-storage:/tmp/accounting_storage
+      - shared-storage:/var/lib/karik/storage
     environment:
+      - STORAGE_BASE_DIR=/var/lib/karik/storage
+      - KARIK_AUTH_SECRET=${KARIK_AUTH_SECRET}
       - REDIS_URL=redis://redis-broker:6379/0
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.1-flash-lite}
@@ -76,6 +78,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-karik_db}
       - POSTGRES_USER=${POSTGRES_USER:-karik_admin}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-karik_password}
+      - KARIK_ENABLE_BACKGROUND_DISPATCHER=1
     depends_on:
       - redis-broker
       - postgres-pgvector
@@ -90,8 +93,10 @@ services:
     container_name: karik-worker
     command: celery -A tasks worker --loglevel=info -c 4
     volumes:
-      - shared-storage:/tmp/accounting_storage
+      - shared-storage:/var/lib/karik/storage
     environment:
+      - STORAGE_BASE_DIR=/var/lib/karik/storage
+      - KARIK_AUTH_SECRET=${KARIK_AUTH_SECRET}
       - REDIS_URL=redis://redis-broker:6379/0
       - LOCAL_AI_URL=${LOCAL_AI_URL:-http://local-ai:8080/v1}
       - LOCAL_AI_MODEL=${LOCAL_AI_MODEL:-gemma4-e4b}

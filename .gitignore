@@ -37,6 +37,8 @@ htmlcov/
 # 5. Dane tymczasowe kontenerów i bazy danych
 postgres-data/
 shared-storage/
+storage/
+.cache/
 tmp/
 *.log
 

@@ -1,4 +1,6 @@
+import os
 import json
+
 import pytest
 from unittest.mock import patch, MagicMock
 from pii_sanitizer import (
@@ -117,19 +119,22 @@ def test_deterministic_company_and_email_masking():
         assert "billing@techdistrib-eu.com" in mapping.values()
         assert any("PL5213894012" in v for v in mapping.values())
 
-def test_extract_ksef_xml_text(tmp_path):
+def test_extract_ksef_xml_text():
     from pii_sanitizer import extract_ksef_xml_text
+    base = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".cache", "test_sanitizer"))
+    os.makedirs(base, exist_ok=True)
     xml_content = """<?xml version="1.0" encoding="UTF-8"?>
     <Faktura>
         <Podmiot1><NIP>7740001454</NIP><Nazwa>ORLEN S.A.</Nazwa></Podmiot1>
     </Faktura>"""
-    xml_file = tmp_path / "ksef_faktura.xml"
+    xml_file = os.path.join(base, "ksef_faktura.xml")
     with open(xml_file, "w", encoding="utf-8") as f:
         f.write(xml_content)
     
-    extracted = extract_ksef_xml_text(str(xml_file))
+    extracted = extract_ksef_xml_text(xml_file)
     assert "7740001454" in extracted
     assert "ORLEN S.A." in extracted
+
 
 def test_ksef_id_anonymization():
     sanitizer = PresidioInvoiceSanitizer(llama_cpp_url="http://mock-url/v1/chat/completions")

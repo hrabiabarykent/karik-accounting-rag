@@ -205,42 +205,24 @@ def run_rag_pipeline(user_query: str, manual_llm_response: Optional[str] = None)
 
     if not raw_llm_response and GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_api_key_here":
         try:
-
-            if HAS_NEW_GENAI:
-                client = genai.Client(api_key=GEMINI_API_KEY)
-                
-                # Próba aktywacji Gemini Context Caching w chmurze Google
-                cache_name = None
-                try:
-                    from rag.context_cache import get_or_create_context_cache
-                    cache_name = get_or_create_context_cache(
-                        client=client,
-                        context_text=data["prompt_to_copy"],
-                        display_name="tax_laws_context_cache",
-                        model_name=GEMINI_MODEL_NAME
-                    )
-                except Exception as cache_err:
-                    logger.warning(f"Pomijam buforowanie kontekstu: {cache_err}")
-
-                gen_config = types.GenerateContentConfig(response_mime_type="application/json")
-                if cache_name:
-                    gen_config.cached_content = cache_name
-
-                response = client.models.generate_content(
-                    model=GEMINI_MODEL_NAME,
-                    contents=data["prompt_to_copy"],
-                    config=gen_config
-                )
-                raw_llm_response = response.text
-            else:
-                model = gemini.GenerativeModel(
-                    model_name=GEMINI_MODEL_NAME,
-                    generation_config={"response_mime_type": "application/json"}
-                )
-                response = model.generate_content(data["prompt_to_copy"])
-                raw_llm_response = response.text
+            import uuid
+            from security.egress_guard import ScopedEgressGuard, seal_sanitized_envelope
+            consult_session_id = f"consult-{uuid.uuid4().hex[:8]}"
+            envelope = seal_sanitized_envelope(
+                payload_text=data["prompt_to_copy"],
+                attempt_id=consult_session_id,
+                tenant_id="rag-consultation",
+                privacy_cleared=True,
+                has_unresolved_tokens=False
+            )
+            guard = ScopedEgressGuard(attempt_id=consult_session_id, tenant_id="rag-consultation")
+            raw_llm_response = guard.execute_completion(
+                envelope=envelope,
+                model_name=GEMINI_MODEL_NAME,
+                response_mime_type="application/json"
+            )
         except Exception as e:
-            logger.error(f"Błąd wywołania Gemini API: {e}")
+            logger.error(f"Błąd wywołania Gemini API przez Egress Guard: {e}")
 
 
 

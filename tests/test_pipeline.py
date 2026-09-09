@@ -3,6 +3,8 @@ import json
 import pytest
 from unittest.mock import MagicMock, patch
 import tasks
+from accounting.db import repository
+from accounting.models import DocumentStatus
 
 @pytest.fixture(autouse=True)
 def mock_redis(monkeypatch):
@@ -49,13 +51,30 @@ def mock_gemini_client(monkeypatch):
     return mock_client
 
 @pytest.fixture
-def dummy_invoice_file(tmp_path):
-    file_path = tmp_path / "invoice.jpg"
+def dummy_invoice_file():
+    base = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".cache", "test_pipeline"))
+    os.makedirs(base, exist_ok=True)
+    file_path = os.path.join(base, "invoice_test.jpg")
     with open(file_path, "wb") as f:
         f.write(b"mock-image-data")
-    return str(file_path)
+    yield file_path
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+        except Exception:
+            pass
 
 def test_pipeline_success(dummy_invoice_file, mock_redis, mock_gemini_client):
+    # Utworzenie rekordu dokumentu i próby w bazie
+    doc, attempt, _ = repository.create_document_and_attempt_atomically(
+        tenant_id="pipeline_tenant",
+        operator_id="test_op",
+        original_filename="invoice_test.jpg",
+        storage_path=dummy_invoice_file,
+        mime_type="image/jpeg",
+        sha256_hash="hash_pipeline_test"
+    )
+
     step_a_content = {
         "masked_text": "Firma <COMPANY_NAME_1> z NIP <PL_NIP_1> kupiła paliwo.",
         "mapping_dictionary": {
@@ -69,105 +88,47 @@ def test_pipeline_success(dummy_invoice_file, mock_redis, mock_gemini_client):
     mock_completion_a.choices = [mock_choice_a]
 
     step_b_content = {
+        "numer_faktury": "FV/2026/01",
         "data_wystawienia": "2026-07-18",
         "sprzedawca_token": "<COMPANY_NAME_1>",
         "sprzedawca_nip_token": "<PL_NIP_1>",
         "pozycje_faktury": [
             {
-                "opis": "Zakup paliwa do samochodu służbowego",
-                "netto": 300.00,
+                "opis": "Zakup paliwa",
+                "netto": 100.00,
                 "vat_stawka": "23%",
-                "vat_kwota": 69.00,
-                "brutto": 369.00,
+                "vat_kwota": 23.00,
+                "brutto": 123.00,
                 "konto_wn": "401-02",
                 "konto_ma": "210"
             }
         ],
         "podsumowanie": {
-            "suma_netto": 300.00,
-            "suma_vat": 69.00,
-            "suma_brutto": 369.00
+            "suma_netto": 100.00,
+            "suma_vat": 23.00,
+            "suma_brutto": 123.00
         },
         "sugerowany_kod_gtu": "GTU_02",
-        "uzasadnienie_ksiegowe": "Koszt IT"
-    }
-    mock_gemini_response = MagicMock()
-    mock_gemini_response.text = json.dumps(step_b_content)
-    mock_gemini_client.models.generate_content.return_value = mock_gemini_response
-
-    step_d_content = {
-        "data_wystawienia": "2026-07-18",
-        "sprzedawca_token": "Firma Testowa Sp. z o.o. (Audited)",
-        "sprzedawca_nip_token": "7740001454",
-        "pozycje_faktury": [
-            {
-                "opis": "Zakup paliwa do samochodu służbowego",
-                "netto": 300.00,
-                "vat_stawka": "23%",
-                "vat_kwota": 69.00,
-                "brutto": 369.00,
-                "konto_wn": "401-02",
-                "konto_ma": "210"
-            }
-        ],
-        "podsumowanie": {
-            "suma_netto": 300.00,
-            "suma_vat": 69.00,
-            "suma_brutto": 369.00
-        },
-        "sugerowany_kod_gtu": "GTU_02",
-        "uzasadnienie_ksiegowe": "Koszt IT"
-    }
-    mock_choice_d = MagicMock()
-    mock_choice_d.message.content = json.dumps(step_d_content)
-    mock_completion_d = MagicMock()
-    mock_completion_d.choices = [mock_choice_d]
-
-    with patch.object(tasks.local_ai_client.chat.completions, 'create') as mock_openai_create:
-        mock_openai_create.side_effect = [mock_completion_a, mock_completion_d]
-        
-        result = tasks.process_invoice_task("test_task_id_123", dummy_invoice_file)
-        
-        assert result["verification_status"] == "VERIFIED"
-        assert result["invoice_data"]["sprzedawca_token"] == "Firma Testowa Sp. z o.o. (Audited)"
-        assert result["invoice_data"]["sprzedawca_nip_token"] == "7740001454"
-        
-        # Redis clean-up assertion
-        assert f"mask:test_task_id_123" not in mock_redis.store
-        assert not os.path.exists(dummy_invoice_file)
-
-def test_pipeline_fail_safe(dummy_invoice_file, mock_redis, mock_gemini_client):
-    step_a_content = {
-        "masked_text": "Firma <COMPANY_NAME_1> z NIP <PL_NIP_1> kupiła paliwo.",
-        "mapping_dictionary": {
-            "<COMPANY_NAME_1>": "Firma Testowa Sp. z o.o.",
-            "<PL_NIP_1>": "7740001454"
-        }
-    }
-    mock_choice_a = MagicMock()
-    mock_choice_a.message.content = json.dumps(step_a_content)
-    mock_completion_a = MagicMock()
-    mock_completion_a.choices = [mock_choice_a]
-
-    step_b_content = {
-        "data_wystawienia": "2026-07-18",
-        "sprzedawca_token": "<COMPANY_NAME_1>",
-        "sprzedawca_nip_token": "<PL_NIP_1>",
-        "pozycje_faktury": [],
-        "podsumowanie": {"suma_netto": 0, "suma_vat": 0, "suma_brutto": 0},
-        "sugerowany_kod_gtu": "GTU_02",
-        "uzasadnienie_ksiegowe": "Koszt IT"
+        "konto_wn": "401-02",
+        "konto_ma": "210"
     }
     mock_gemini_response = MagicMock()
     mock_gemini_response.text = json.dumps(step_b_content)
     mock_gemini_client.models.generate_content.return_value = mock_gemini_response
 
     with patch.object(tasks.local_ai_client.chat.completions, 'create') as mock_openai_create:
-        mock_openai_create.side_effect = [mock_completion_a, Exception("OOM or timeout in Step D")]
-        
-        result = tasks.process_invoice_task("test_task_id_456", dummy_invoice_file)
-        
-        assert result["verification_status"] == "REQUIRES_MANUAL_VERIFICATION"
-        assert result["invoice_data"]["sprzedawca_token"] == "Firma Testowa Sp. z o.o."
-        assert result["invoice_data"]["sprzedawca_nip_token"] == "7740001454"
-        assert not os.path.exists(dummy_invoice_file)
+        mock_openai_create.return_value = mock_completion_a
+
+        with patch("tasks.ScopedEgressGuard.execute_completion", return_value=json.dumps(step_b_content)):
+            result = tasks.process_invoice_task(attempt.id, dummy_invoice_file, tenant_id="pipeline_tenant")
+
+            # OCR to zawsze hipoteza wymagająca weryfikacji przez człowieka -> REQUIRES_REVIEW
+            assert result["status"] == DocumentStatus.REQUIRES_REVIEW.value
+            assert result["is_valid"] is True
+            assert len(result["reconciliation_errors"]) == 0
+
+            # Weryfikacja: plik źródłowy NIE został usunięty (wymóg zachowania oryginałów!)
+            assert os.path.exists(dummy_invoice_file)
+
+            # Weryfikacja: pamięć podręczna RAM w Redis została wyczyszczona
+            assert f"mask:{attempt.id}" not in mock_redis.store

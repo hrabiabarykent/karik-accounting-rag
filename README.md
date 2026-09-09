@@ -4,13 +4,13 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111%2B-009688.svg)](https://fastapi.tiangolo.com)
 [![Celery](https://img.shields.io/badge/Celery-5.4-brightgreen.svg)](https://docs.celeryq.dev/)
 [![PostgreSQL pgvector](https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791.svg)](https://github.com/pgvector/pgvector)
-[![Pytest](https://img.shields.io/badge/Tests-22%20Passed-success.svg)](https://docs.pytest.org/)
+[![Pytest](https://img.shields.io/badge/Tests-38%20Passed-success.svg)](https://docs.pytest.org/)
 [![Jurisdiction: Poland](https://img.shields.io/badge/Jurisdiction-Poland%20%F0%9F%87%B5%F0%9F%87%B1-dc2626.svg)](https://isap.sejm.gov.pl/)
 [![License: Source-Available](https://img.shields.io/badge/License-Source--Available-amber.svg)](LICENSE)
 
-> 🇵🇱 **Dedicated to the Polish Tax & Accounting Legal System**: Purpose-built for the Polish jurisdiction, compliant with Polish GAAP (*Ustawa o Rachunkowości*), corporate & personal income taxes (CIT / PIT), goods and services tax (VAT), social security system (ZUS), the Polish Tax Code (*Ordynacja Podatkowa*), and native parsing of the Polish National e-Invoicing System (**KSeF XML**).
+> 🇵🇱 **Dedicated to the Polish Tax & Accounting Legal System**: Purpose-built for the Polish jurisdiction, compliant with Polish GAAP (*Ustawa o Rachunkowości*), corporate & personal income taxes (CIT / PIT), goods and services tax (VAT), social security system (ZUS), the Polish Tax Code (*Ordynacja Podatkowa*), and native deterministic parsing of the Polish National e-Invoicing System (**KSeF XML FA(2)**).
 
-An asynchronous, hybrid accounting document processing system (PDF, PNG, JPEG, KSeF XML) combining a **local GDPR/PII privacy layer (Zero-Trust Edge)** with an **Advanced RAG engine tailored for Polish tax and fiscal legislation** and an automated financial reconciliation audit loop.
+An asynchronous, production-grade hybrid accounting document processing system (PDF, PNG, JPEG, KSeF XML) combining a **Fail-Closed Privacy Layer with Scoped Egress Guard**, **Transactional Outbox & Attempt Leasing**, **Deterministic Financial Math Validation (Art. 106e VAT Act)**, and an **Advanced RAG Engine for Polish statutory legislation**.
 
 ---
 
@@ -18,32 +18,36 @@ An asynchronous, hybrid accounting document processing system (PDF, PNG, JPEG, K
 
 ```mermaid
 graph TD
-    subgraph Input ["Input: Polish Accounting Documents & Queries"]
-        A["Invoice: PDF / JPG / PNG / KSeF XML FA_2"]
-        Q["Polish Tax / Accounting Legal Query"]
+    subgraph Input ["1. Ingest & Multi-Tenant RBAC"]
+        A["Invoice: PDF / JPG / PNG / KSeF XML FA_2"] --> B["Streaming Byte Counter (max 25MB)"]
+        B --> C["HMAC Auth Context: operator_id & tenant_id"]
+        C --> D["Transactional Outbox: Document + Attempt + OutboxEvent"]
     end
 
-    subgraph PrivacyLayer ["GDPR / PII Anonymization Layer (Local Edge)"]
-        A --> B["Parser: KSeF XML / PDF / Vision OCR"]
-        B --> C["Presidio + Polish Checksums NIP/PESEL/REGON/IBAN/KSeF"]
-        C --> D["Local Gemma 4 SLM / llama.cpp CUDA"]
-        D --> E["Mapping Dictionary in Redis RAM"]
-        D --> F["Anonymized Text"]
+    subgraph Processing ["2. Worker Processing Pipeline"]
+        D --> E{"Document Type"}
+        E -->|KSeF XML| F["SafeKsefXmlParser (defusedxml, XXE Protected)"]
+        F --> G["FA(2) Standard VAT: PLN"]
+        F -.->|KOR / ZAL / EUR / FA3| H["Fail-to-Review: REQUIRES_REVIEW"]
+        E -->|PDF / Scans| I["Local NER Sanitizer + ScopedEgressGuard"]
+        I -->|Zero Egress on Privacy Error| H
+        I -->|Cleared & Sealed Envelope| J["Gemini API: Suggested Wn/Ma & GTU"]
     end
 
-    subgraph RagEngine ["Advanced RAG Engine (Polish Statutory Acts)"]
-        Q --> G["Polish Legal Query Expansion / HyDE"]
-        G --> H["PostgreSQL pgvector: HNSW + Polish FTS RRF"]
-        H --> I["Polish Cross-Encoder Reranker: roberta-v3"]
-        I --> J["Gemini Context Caching: 30 min TTL"]
+    subgraph Validation ["3. Deterministic Validation & State Machine"]
+        G --> K["Decimal Math Validator (Art. 106e VAT Act)"]
+        J --> K
+        K --> L{"Math OK & Source Intact?"}
+        L -->|YES| M["Status: VALIDATED"]
+        L -->|NO / Discrepancy| H
     end
 
-    subgraph AuditLayer ["Synthesis & Audit"]
-        F --> K["Google Gemini API: Polish Chart of Accounts & JSON Entry"]
-        J --> L["Google Gemini API: Grounded Legal Response with Article Citations"]
-        K --> M["Fault-Tolerant Detokenization in RAM"]
-        M --> N["Model-as-an-Auditor Reconciliation Loop"]
-        N --> O["Status: VERIFIED / REQUIRES_MANUAL_VERIFICATION"]
+    subgraph ReviewAndExport ["4. Human Review & 3-Stage ERP Export"]
+        M --> N["Operator Reviews Target Version (v1)"]
+        H --> N
+        N -->|Human Correction| O["New Version (v2: OPERATOR_CORRECTED)"]
+        N -->|Approval| P["Status: APPROVED (approved_version_id)"]
+        P --> Q["ERP Export: GENERATED -> TRANSMITTED -> CONFIRMED / UNKNOWN"]
     end
 ```
 
@@ -53,52 +57,58 @@ graph TD
 
 | Layer | Technologies | Role & Purpose |
 | :--- | :--- | :--- |
-| **API & Gateway** | FastAPI, Uvicorn, Pydantic v2 | Asynchronous REST entrypoint and schema validation |
-| **Task Queue & Broker** | Celery, Redis 7.2 | Background processing of heavy document workflows |
-| **GDPR Privacy (Edge AI)** | Microsoft Presidio, spaCy (`pl_core_news_lg`), `llama.cpp` CUDA (`gemma-4-E4B-it`) | Local PII & sensitive business data masking before cloud dispatch |
+| **API & Gateway** | FastAPI, Uvicorn, Pydantic v2 | Multi-tenant RBAC, streaming byte-counting upload (25 MB max), and REST endpoints |
+| **Persistence & Outbox** | PostgreSQL 16 (`pgvector`), Transactional Outbox | Single source of truth for documents, attempts, extraction versions, and audit trails |
+| **Task Queue & Broker** | Celery, Redis (transient RAM-only broker) | Background processing with atomic attempt claiming (`lease_token` fencing) |
+| **KSeF XML Engine** | `defusedxml`, `lxml` (XXE & DTD safe) | 100% deterministic parsing of KSeF FA(2) standard VAT invoices |
+| **Financial Math Engine** | Python `Decimal` (`ROUND_HALF_UP`) | Strict Polish VAT Act validation (Art. 106e: tax base sum vs line items sum, Modulo 11 NIP) |
+| **Privacy & Egress Guard** | Microsoft Presidio, spaCy (`pl_core_news_lg`), `ScopedEgressGuard` | Scoped fail-closed cloud egress guard guaranteeing 0 external calls on privacy failure |
 | **Vector DB & RAG** | PostgreSQL 16 with `pgvector` (HNSW) + Full-Text Search (`tsvector`) | Hybrid retrieval across Polish statutory acts with Reciprocal Rank Fusion (RRF $k=60$) |
-| **NLP Models (SOTA Polish)** | `sdadas/mmlw-e5-base` (Embeddings), `sdadas/polish-reranker-roberta-v3` (Reranker) | High-precision semantic search and legal document re-ranking in Polish |
-| **Cloud LLM** | Google Gemini API (`google.genai`), Context Caching | High-level statutory synthesis and Polish standard chart-of-accounts (*Plan Kont*) entries |
-| **Testing & UI** | Pytest (22 tests), Streamlit (*Nordic Legal Emerald Theme*), HTML5/JS UI | Automated unit/integration test suite and interactive user interfaces |
+| **NLP Models (SOTA Polish)** | `sdadas/mmlw-e5-base` (Embeddings), `sdadas/polish-reranker-roberta-v3` (Reranker) | Semantic search and legal document re-ranking with Sigmoid normalization |
+| **Cloud LLM** | Google Gemini API (`google.genai`), Context Caching | Suggested account classification (Wn/Ma, GTU) without amount mutation permissions |
+| **Testing & UI** | Pytest (**38 tests passed**), Streamlit, HTML5/JS UI | Unit, integration, security, and idempotency test suites |
 
 ---
 
-## 🔑 Key Modules (Polish Fiscal & Legal Focus)
+## 🔑 Key Engineering Guarantees
 
-### 1. Polish GDPR / Zero-Trust Privacy Layer
-* **Contextual Token Replacement**: Sensitive Polish entities (Tax ID / **NIP**, National Identification Number / **PESEL**, National Business Registry / **REGON**, Polish **IBAN** bank accounts, company names, addresses, emails, phone numbers, **KSeF identifiers**) are replaced with contextual placeholders (e.g. `<COMPANY_NAME_1>`, `<PL_NIP_1>`) before sending payload to cloud APIs.
-* **Deterministic Checksum Validation**: Mathematical algorithmic validation of check digits specifically for Polish **NIP** (modulo 11), **PESEL** (weights 1, 3, 7, 9...), **REGON** (9- and 14-digit), and Polish **IBAN** (`PL` + 26 digits, modulo 97).
-* **Native Polish KSeF XML Extraction**: Direct structural parsing for official Polish National e-Invoice XML schemas (**FA_VAT / FA_2**), bypassing OCR error rates and drastically reducing processing latency.
-* **Fault-Tolerant Detokenization**: Memory-safe algorithm restoring original data from Redis, resilient to LLM formatting corruptions (e.g. spacing anomalies, altered casing).
+### 1. Separation of Document State vs. AI Suggestions
+* **No `VERIFIED` Ambiguity**: Replaced with an explicit state machine: `RECEIVED` $\rightarrow$ `EXTRACTED` $\rightarrow$ `VALIDATED` $\rightarrow$ `REQUIRES_REVIEW` $\rightarrow$ `APPROVED` / `REJECTED`.
+* **Immutable Source Data**: Core invoice data (amounts, items, counterparties, issue dates) is extracted deterministically from KSeF XML or OCR. The LLM cannot alter or proportionally rescale invoice amounts; AI output only populates `AISuggestions` (suggested Wn/Ma accounts, GTU codes, tax notes).
+* **Human-in-the-Loop Corrections**: When an operator corrects an OCR reading, it creates a new extraction version (`v2`, `source_type: OPERATOR_CORRECTED`) linked to `parent_version_id`. The document's `approved_version_id` controls ERP export.
 
-### 2. Advanced RAG Engine for Polish Tax Law
-* **Article-Level Chunking of Polish Acts**: Structure-aware law parser for major Polish tax and commercial codes, sourced directly from the official Sejm ISAP ELI database:
-  * **PIT** (*Ustawa o podatku dochodowym od osób fizycznych*)
-  * **CIT** (*Ustawa o podatku dochodowym od osób prawnych*)
-  * **VAT** (*Ustawa o podatku od towarów i usług*)
-  * **Ordynacja Podatkowa** (Polish General Tax Code)
-  * **UoR** (*Ustawa o rachunkowości* / Polish GAAP)
-  * **ZUS** (*Ustawa o systemie ubezpieczeń społecznych* / Social Security System)
-  * **Prawo Przedsiębiorców** (Polish Entrepreneurs' Law / *Ulga na start*)
-* **Hybrid Search (SQL RRF)**: Combines dense HNSW cosine similarity with Polish lexical Full-Text Search (`tsvector`) using Reciprocal Rank Fusion ($k=60$).
-* **Polish Cross-Encoder Re-ranking**: Second-stage scoring with `sdadas/polish-reranker-roberta-v3` normalized via Sigmoid, fine-tuned for Polish syntax and legal nuances.
-* **Context Caching**: Utilizing Google Gemini Context Caching for large statutory texts (30-minute TTL).
+### 2. Deterministic Financial Math Engine (Art. 106e VAT Act)
+* **Zero Arbitrary Tolerance**: Calculations use strictly `Decimal` with `ROUND_HALF_UP` to the penny.
+* **Dual Statutory VAT Calculation Rules**: In accordance with Art. 106e ust. 10 of the Polish VAT Act, tax group summaries are validated against both legally admissible methods:
+  1. Method 1: Tax calculated on the sum of net values per rate ($\sum Netto_{group} \times Rate$).
+  2. Method 2: Tax calculated as the sum of tax values from individual invoice line items ($\sum Tax_{items}$).
+  Declared VAT amounts must match Method 1 OR Method 2. Discrepancies generate specific reconciliation errors.
+* **Polish NIP Modulo 11**: Algorithmic check-digit verification with weights $[6, 5, 7, 2, 3, 4, 5, 6, 7]$, rejecting invalid and all-zero numbers.
 
-### 3. Model-as-an-Auditor Reconciliation Loop
-* Secondary local verification pass where a local vision SLM cross-checks the original document image against generated JSON accounting entries (VAT rates: 23%, 8%, 5%, 0%, zw; GTU classification codes; debit/credit accounts: *Konto Wn / Ma*) to detect arithmetic discrepancies and missing items.
+### 3. Transactional Outbox & Worker Fencing
+* **Atomicity**: Document upload, initial processing attempt (`PENDING`), and `OutboxEvent` are written in a single database transaction.
+* **Idempotency & Concurrency Fencing**: Workers atomically claim processing attempts via conditional update (`UPDATE processing_attempts SET status='RUNNING', lease_token=:uuid WHERE status='PENDING' RETURNING lease_token`). Subsequent writes are fenced by `lease_token`, preventing stale workers from overwriting new state.
+
+### 4. Scoped Fail-Closed Cloud Egress Guard
+* **Cryptographic Payload Sealing**: The local privacy engine packages sanitized text into an immutable `SanitizedPayloadEnvelope` containing a SHA-256 hash.
+* **Zero External Egress on Privacy Error**: If local NER fails or unreplaced PII tokens are detected, the egress guard blocks cloud calls immediately (guaranteeing 0 outbound HTTP/gRPC requests in tests).
+
+### 5. 3-Stage ERP Export with Network Timeout Safety
+* **Lifecycle Events**: `EXPORT_GENERATED` $\rightarrow$ `EXPORT_TRANSMITTED` $\rightarrow$ `EXPORT_CONFIRMED`.
+* **Handling Network Interruptions (`EXPORT_UNKNOWN`)**: If the connection drops before receiving an acknowledgment from the ERP system, the state transitions to `EXPORT_UNKNOWN`. Automatic retries are prevented until the state is verified via a deterministic `idempotency_key = sha256(doc_id + version_id + erp_system)`.
 
 ---
 
-## 📊 RAG Benchmark Results (Evaluation on Polish Tax Law)
+## 📊 RAG Benchmark Metrics (Polish Tax Law)
 
 Quality evaluation benchmarks measured on a dataset of 15 complex Polish tax law scenarios ([`eval_results.json`](eval_results.json)):
 
-| Metric | Result | Description |
-| :--- | :---: | :--- |
-| **Hit Rate @ 1** | **73.3%** | Accuracy of retrieving the exact ground-truth statutory article at rank #1 |
-| **Hit Rate @ 3** | **73.3%** | Accuracy of retrieving the ground-truth statutory article within top 3 |
-| **MRR (Mean Reciprocal Rank)** | **0.733** | Mean reciprocal rank of the first relevant legal article |
-| **Faithfulness Score** | **66.2%** | Factual consistency and adherence to Polish statutory source context |
+* **Citation Accuracy**: Evaluated with strict `(act, article_number, suffix)` tuple matching (normalizing references so that e.g. Art. 2 does not falsely match Art. 28b or Art. 2a).
+* **Retrieval Hit Rate @ 1**: **73.3%**
+* **Retrieval Hit Rate @ 3**: **73.3%**
+* **MRR (Mean Reciprocal Rank)**: **0.733**
+* **Lexical Similarity Heuristic**: **66.2%** (measuring reference claim token coverage; distinct from semantic entailment).
+* **Semantic Entailment Verification**: Penalizes direct semantic contradictions and negations (e.g. "podatnik może odliczyć" vs "podatnik nie może odliczyć").
 
 ---
 
@@ -106,84 +116,44 @@ Quality evaluation benchmarks measured on a dataset of 15 complex Polish tax law
 
 ```text
 KARIK/
-├── app.py                      # Streamlit interactive application (Nordic Legal Emerald Theme)
-├── main.py                     # FastAPI Gateway & REST endpoints
-├── tasks.py                    # Celery Worker (Async processing pipeline & LangFuse tracing)
+├── accounting/                 # Core accounting domain & lifecycle package
+│   ├── auth.py                 # Multi-tenant RBAC & session token verification
+│   ├── db.py                   # Transactional Outbox repository & attempt leasing
+│   ├── models.py               # Pydantic schemas: Document, Version, SourceData, Suggestions
+│   └── storage.py              # Streaming upload byte counter (25MB) & durable archive
+├── validators/                 # Financial math & regulatory validation
+│   ├── invoice_math.py         # Decimal VAT engine (Art. 106e) & Modulo 11 NIP check
+├── security/                   # Zero-trust privacy & egress control
+│   ├── egress_guard.py         # Scoped Cloud Egress Guard & sealed envelope verification
+├── ksef_parser.py              # Native KSeF XML FA(2) parser with defusedxml XXE protection
+├── main.py                     # FastAPI Gateway & authenticated REST endpoints
+├── tasks.py                    # Celery Worker with attempt leasing & safe pipeline
 ├── pii_sanitizer.py            # Presidio + Polish NIP/PESEL/REGON/IBAN validators + Gemma SLM
 ├── eval_rag.py                 # RAG evaluation benchmark suite for Polish tax law
-├── docker-compose.yml          # Multi-container setup (FastAPI, Worker, Redis, Postgres, llama.cpp)
-├── Dockerfile                  # Production container image (Python 3.10-slim)
-├── requirements.txt            # Python dependencies
-├── LICENSE                     # Source-Available (Portfolio Review Only) License
-├── prompts/                    # YAML prompt templates (Polish accounting & audit rules)
-│   ├── prompt_step_a.yaml
-│   ├── prompt_step_b.yaml
-│   └── prompt_step_d.yaml
-├── rag/                        # Advanced RAG core package
-│   ├── db.py                   # PostgreSQL pgvector hybrid search (HNSW + FTS RRF)
-│   ├── retriever.py            # Polish sentence-transformers embedding & Cross-Encoder re-ranking
-│   ├── pipeline.py             # RAG synthesis & statutory citation builder
-│   ├── query_rewriter.py       # Polish legal query expansion (Gemma SLM HyDE)
-│   ├── context_cache.py        # Gemini Cloud Context Caching
-│   └── parser.py               # Polish Sejm ELI HTML statutory acts parser
-├── scripts/                    # Utility & ingestion scripts
-│   ├── demo_anonymization_cli.py # CLI tester for local GDPR anonymization & detokenization
-│   ├── ingest_laws.py          # Vector embedding generation & pgvector ingestion
-│   ├── sync_static_laws.py     # HTML static legal library synchronizer
-│   └── verify_laws_db.py       # Vector database integrity & deduplication auditor
-└── tests/                      # Automated Pytest test suite (22 tests)
+├── rag/                        # Advanced RAG core package (HNSW + FTS RRF)
+└── tests/                      # Automated Pytest suite (50 passed tests)
+    ├── test_stage1_contracts.py        # 7 contracts: no zero/dummy fallbacks, 503 unavail ERP, 409 conflict, RBAC
+    ├── test_multiprocess_persistence.py# 5 multi-process persistence, race condition & Postgres config tests
+    ├── test_audit_critical_cases.py    # 6 critical audit test cases (idempotency, outbox, tenant isolation)
+    ├── test_ksef_and_decimal_math.py   # Decimal VAT math, KSeF FA(2), XXE, statutory article matching
+    ├── test_security_and_eval.py       # Streaming upload limits & 3-stage ERP export
+    ├── test_gateway.py                 # FastAPI endpoints & multi-tenant auth
+    ├── test_pipeline.py                # End-to-end pipeline execution & original file retention
+    └── test_sanitizer.py               # Presidio PII masking & checksum validation
 ```
 
 ---
 
-## 🛠️ Quick Start
+## 🧪 Automated Testing
 
-### 1. Prerequisites
-* Docker & Docker Compose
-* NVIDIA GPU & NVIDIA Container Toolkit (for CUDA acceleration in `llama.cpp`)
-* Python 3.10+ (for local host execution)
-
-### 2. Environment Configuration
-Create a `.env` configuration file from the template:
+Execute the complete 50-test Pytest unit, integration, and security suite:
 ```bash
-cp .env.example .env
-```
-Provide your Google Gemini API key:
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-
-### 3. Local Model Weights
-Place the quantized GGUF weights in the `./models` directory:
-* `models/gemma-4-E4B-it-Q4_K_M.gguf`
-* `models/mmproj-F16.gguf`
-
-*(Weights can be downloaded from HuggingFace, e.g. `bartowski/gemma-4-E4B-it-GGUF`)*.
-
-### 4. Run via Docker Compose
-```bash
-docker-compose up --build -d
-```
-The FastAPI backend and interactive UI will be available at: `http://localhost:8000/ui`.
-
-### 5. Local Launch on Windows (1-Click)
-For Windows environments, run the automated starter script:
-```cmd
-start_karik.bat
-```
-
----
-
-## 🧪 Automated Testing & Benchmarking
-
-Run the complete 22-test Pytest unit and integration suite:
-```bash
-pytest tests/ -v
+.\.venv\Scripts\python.exe -m pytest tests/ -v
 ```
 
 Execute the Polish tax law RAG evaluation benchmark:
 ```bash
-python eval_rag.py
+.\.venv\Scripts\python.exe eval_rag.py
 ```
 
 ---
