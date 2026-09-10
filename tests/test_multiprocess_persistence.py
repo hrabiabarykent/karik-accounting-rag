@@ -225,6 +225,7 @@ def test_explicit_postgres_configuration_error(monkeypatch):
     monkeypatch.setenv("KARIK_DB_ENGINE", "postgres")
     monkeypatch.setenv("POSTGRES_HOST", "127.0.0.1")
     monkeypatch.setenv("POSTGRES_PORT", "65534")  # port bez usługi
+    monkeypatch.setenv("POSTGRES_PASSWORD", "test_unreachable_password")
     monkeypatch.delenv("ACCOUNTING_DATABASE_URL", raising=False)
     monkeypatch.delenv("RAG_DATABASE_URL", raising=False)
     monkeypatch.delenv("DATABASE_URL", raising=False)
