@@ -51,18 +51,11 @@ def mock_gemini_client(monkeypatch):
     return mock_client
 
 @pytest.fixture
-def dummy_invoice_file():
-    base = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".cache", "test_pipeline"))
-    os.makedirs(base, exist_ok=True)
-    file_path = os.path.join(base, "invoice_test.jpg")
+def dummy_invoice_file(tmp_path):
+    file_path = str(tmp_path / "invoice_test.jpg")
     with open(file_path, "wb") as f:
         f.write(b"mock-image-data")
-    yield file_path
-    if os.path.exists(file_path):
-        try:
-            os.remove(file_path)
-        except Exception:
-            pass
+    return file_path
 
 def test_pipeline_success(dummy_invoice_file, mock_redis, mock_gemini_client):
     # Utworzenie rekordu dokumentu i próby w bazie

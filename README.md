@@ -1,10 +1,10 @@
 # KARIK – Hybrid Accounting & Tax Law RAG System (Polish Jurisdiction)
 
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111%2B-009688.svg)](https://fastapi.tiangolo.com)
 [![Celery](https://img.shields.io/badge/Celery-5.4-brightgreen.svg)](https://docs.celeryq.dev/)
 [![PostgreSQL pgvector](https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791.svg)](https://github.com/pgvector/pgvector)
-[![Pytest](https://img.shields.io/badge/Tests-38%20Passed-success.svg)](https://docs.pytest.org/)
+[![Pytest](https://img.shields.io/badge/Tests-91%20Passed-success.svg)](https://docs.pytest.org/)
 [![Jurisdiction: Poland](https://img.shields.io/badge/Jurisdiction-Poland%20%F0%9F%87%B5%F0%9F%87%B1-dc2626.svg)](https://isap.sejm.gov.pl/)
 [![License: Source-Available](https://img.shields.io/badge/License-Source--Available-amber.svg)](LICENSE)
 
@@ -66,7 +66,7 @@ graph TD
 | **Vector DB & RAG** | PostgreSQL 16 with `pgvector` (HNSW) + Full-Text Search (`tsvector`) | Hybrid retrieval across Polish statutory acts with Reciprocal Rank Fusion (RRF $k=60$) |
 | **NLP Models (SOTA Polish)** | `sdadas/mmlw-e5-base` (Embeddings), `sdadas/polish-reranker-roberta-v3` (Reranker) | Semantic search and legal document re-ranking with Sigmoid normalization |
 | **Cloud LLM** | Google Gemini API (`google.genai`), Context Caching | Suggested account classification (Wn/Ma, GTU) without amount mutation permissions |
-| **Testing & UI** | Pytest (**38 tests passed**), Streamlit, HTML5/JS UI | Unit, integration, security, and idempotency test suites |
+| **Testing & UI** | Pytest (**96 tests passed**), Streamlit, HTML5/JS UI | Unit, integration, security, and idempotency test suites |
 
 ---
 
@@ -101,15 +101,37 @@ graph TD
 
 ## 📊 RAG Benchmark Metrics (Polish Tax Law)
 
-Quality evaluation benchmarks measured on a dataset of 15 complex Polish tax law scenarios ([`eval_results.json`](eval_results.json)):
+<!-- BENCHMARK_METRICS_START -->
+*Ostatnia ewaluacja benchmarku: `2026-09-10 12:03:29`* | *Liczba scenariuszy testowych: `15`*
 
-* **Citation Accuracy**: Evaluated with strict `(act, article_number, suffix)` tuple matching (normalizing references so that e.g. Art. 2 does not falsely match Art. 28b or Art. 2a).
-* **Retrieval Hit Rate @ 1**: **73.3%**
-* **Retrieval Hit Rate @ 3**: **73.3%**
-* **MRR (Mean Reciprocal Rank)**: **0.733**
-* **Lexical Similarity Heuristic**: **66.2%** (measuring reference claim token coverage; distinct from semantic entailment).
-* **Semantic Entailment Verification**: Penalizes direct semantic contradictions and negations (e.g. "podatnik może odliczyć" vs "podatnik nie może odliczyć").
+### 🎯 Skuteczność Retrievalu i Pokrycia Cytowań
 
+| Metryka Wyszukiwania | Poziom Artykułu | Poziom Ścisły (Exact) | Znaczenie Biznesowe |
+| :--- | :---: | :---: | :--- |
+| **Hit Rate @ 1** | **60.0%** | **33.3%** | Odnalezienie właściwego przepisu na 1. pozycji |
+| **Hit Rate @ 3** | **66.7%** | **33.3%** | Obecność właściwego przepisu w Top 3 |
+| **Hit Rate @ 5** | **66.7%** | **33.3%** | Obecność właściwego przepisu w Top 5 |
+| **MRR (Mean Reciprocal Rank)** | **0.622** | **0.333** | Średnia odwrotność rangi pierwszego trafienia |
+| **Macro Citation Recall** | **66.7%** | — | Średnie pokrycie wymaganych jednostek redakcyjnych |
+| **Complete-Answer Rate** | **66.7%** | — | Odsetek pytań z kompletnym zestawem przepisów |
+
+### 🧠 Jakość Generacji i Weryfikacja Ugruntowania
+- **Status ewaluacji generacji**: `not_run`
+- **Faithfulness (Wierność Semantyczna)**: `not_run` (brak wywołania LLM w trybie offline/CI)
+- **Heuristic Grounding Score**: `not_run` (brak wywołania LLM w trybie offline/CI)
+
+### 🏛️ Rozbicie Wyników per Akt Prawny
+
+| Akt Prawny | Liczba Pytań | Hit Rate @ 3 | Complete-Answer | MRR |
+| :--- | :---: | :---: | :---: | :---: |
+| **CIT** | 3 | 100.0% | 100.0% | 1.000 |
+| **OP** | 1 | 0.0% | 0.0% | 0.000 |
+| **PIT** | 7 | 71.4% | 71.4% | 0.714 |
+| **PP** | 1 | 0.0% | 0.0% | 0.000 |
+| **UOR** | 2 | 50.0% | 50.0% | 0.500 |
+| **VAT** | 5 | 60.0% | 60.0% | 0.600 |
+| **ZUS** | 1 | 100.0% | 100.0% | 0.333 |
+<!-- BENCHMARK_METRICS_END -->
 ---
 
 ## 📁 Project Structure
@@ -129,24 +151,32 @@ KARIK/
 ├── main.py                     # FastAPI Gateway & authenticated REST endpoints
 ├── tasks.py                    # Celery Worker with attempt leasing & safe pipeline
 ├── pii_sanitizer.py            # Presidio + Polish NIP/PESEL/REGON/IBAN validators + Gemma SLM
-├── eval_rag.py                 # RAG evaluation benchmark suite for Polish tax law
+├── scripts/                    # Maintenance & automation scripts
+│   ├── download_models.py      # Offline NLP models downloader & SHA-256 integrity verifier
+│   └── update_readme_metrics.py# Automated benchmark metrics synchronization with CI --check
+├── eval_rag.py                 # RAG evaluation benchmark suite for Polish tax law (strict LegalCitation model)
 ├── rag/                        # Advanced RAG core package (HNSW + FTS RRF)
-└── tests/                      # Automated Pytest suite (50 passed tests)
+└── tests/                      # Automated Pytest suite (96 passed tests)
     ├── test_stage1_contracts.py        # 7 contracts: no zero/dummy fallbacks, 503 unavail ERP, 409 conflict, RBAC
-    ├── test_multiprocess_persistence.py# 5 multi-process persistence, race condition & Postgres config tests
+    ├── test_multiprocess_persistence.py# 5 multi-process persistence, race condition & SQLite/Postgres config
     ├── test_audit_critical_cases.py    # 6 critical audit test cases (idempotency, outbox, tenant isolation)
     ├── test_ksef_and_decimal_math.py   # Decimal VAT math, KSeF FA(2), XXE, statutory article matching
     ├── test_security_and_eval.py       # Streaming upload limits & 3-stage ERP export
     ├── test_gateway.py                 # FastAPI endpoints & multi-tenant auth
     ├── test_pipeline.py                # End-to-end pipeline execution & original file retention
-    └── test_sanitizer.py               # Presidio PII masking & checksum validation
+    ├── test_sanitizer.py               # Presidio PII masking & checksum validation
+    ├── test_citation_benchmark.py      # 8 LegalCitation model, non-Cartesian groups, and metrics tests
+    ├── test_readme_sync.py             # 6 README metrics synchronization and --check CLI tests
+    ├── test_postgres_config.py         # 4 centralized PostgreSQL credentials security tests
+    ├── test_rag_ingest_versioning.py   # 4 staged transactional ingest & versioning tests
+    └── test_model_manifest.py          # 5 offline NLP models SHA-256 manifest verification tests
 ```
 
 ---
 
-## 🧪 Automated Testing
+## 🧪 Automated Testing & Benchmark Verification
 
-Execute the complete 50-test Pytest unit, integration, and security suite:
+Execute the complete 96-test Pytest unit, integration, and security suite:
 ```bash
 .\.venv\Scripts\python.exe -m pytest tests/ -v
 ```
@@ -154,6 +184,35 @@ Execute the complete 50-test Pytest unit, integration, and security suite:
 Execute the Polish tax law RAG evaluation benchmark:
 ```bash
 .\.venv\Scripts\python.exe eval_rag.py
+```
+
+Verify that `README.md` metrics match `eval_results.json` (used in CI):
+```bash
+.\.venv\Scripts\python.exe scripts/update_readme_metrics.py --check
+```
+
+Verify SHA-256 cryptographic checksums of offline NLP models:
+```bash
+.\.venv\Scripts\python.exe scripts/download_models.py --verify-only
+```
+
+---
+
+## 🐳 Docker Compose Profiles
+
+The services are compartmentalized into isolated profiles:
+```bash
+# Core services: PostgreSQL with pgvector, Redis, and FastAPI Gateway
+docker compose --profile core up -d
+
+# Background Worker: Celery processing worker
+docker compose --profile worker up -d
+
+# Machine Learning: Local AI / Gemma SLM (CUDA acceleration)
+docker compose --profile ml up -d
+
+# Complete production stack
+docker compose --profile all up -d
 ```
 
 ---

@@ -1,13 +1,90 @@
 {
-  "timestamp": "2026-09-09 11:17:55",
+  "timestamp": "2026-09-10 12:03:29",
   "total_questions": 15,
-  "elapsed_seconds": 404.66,
+  "elapsed_seconds": 309.14,
   "metrics": {
     "hit_rate_at_1": 0.6,
     "hit_rate_at_3": 0.6667,
     "hit_rate_at_5": 0.6667,
-    "mrr": 0.6333,
-    "faithfulness": 0.0
+    "mrr": 0.6222,
+    "hit_rate_at_1_exact": 0.3333,
+    "hit_rate_at_3_exact": 0.3333,
+    "hit_rate_at_5_exact": 0.3333,
+    "mrr_exact": 0.3333,
+    "macro_citation_recall": 0.6667,
+    "complete_answer_rate": 0.6667,
+    "generation": {
+      "status": "not_run",
+      "evaluated_questions": 0,
+      "faithfulness": null,
+      "heuristic_grounding_score": null
+    },
+    "faithfulness": null
+  },
+  "metrics_by_act": {
+    "CIT": {
+      "questions_count": 3,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "mrr": 1.0,
+      "complete_answer_rate": 1.0,
+      "macro_recall": 1.0
+    },
+    "OP": {
+      "questions_count": 1,
+      "hit_rate_at_1": 0.0,
+      "hit_rate_at_3": 0.0,
+      "hit_rate_at_5": 0.0,
+      "mrr": 0.0,
+      "complete_answer_rate": 0.0,
+      "macro_recall": 0.0
+    },
+    "PIT": {
+      "questions_count": 7,
+      "hit_rate_at_1": 0.7143,
+      "hit_rate_at_3": 0.7143,
+      "hit_rate_at_5": 0.7143,
+      "mrr": 0.7143,
+      "complete_answer_rate": 0.7143,
+      "macro_recall": 0.7143
+    },
+    "PP": {
+      "questions_count": 1,
+      "hit_rate_at_1": 0.0,
+      "hit_rate_at_3": 0.0,
+      "hit_rate_at_5": 0.0,
+      "mrr": 0.0,
+      "complete_answer_rate": 0.0,
+      "macro_recall": 0.0
+    },
+    "UOR": {
+      "questions_count": 2,
+      "hit_rate_at_1": 0.5,
+      "hit_rate_at_3": 0.5,
+      "hit_rate_at_5": 0.5,
+      "mrr": 0.5,
+      "complete_answer_rate": 0.5,
+      "macro_recall": 0.5
+    },
+    "VAT": {
+      "questions_count": 5,
+      "hit_rate_at_1": 0.6,
+      "hit_rate_at_3": 0.6,
+      "hit_rate_at_5": 0.6,
+      "mrr": 0.6,
+      "complete_answer_rate": 0.6,
+      "macro_recall": 0.6
+    },
+    "ZUS": {
+      "questions_count": 1,
+      "hit_rate_at_1": 0.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "mrr": 0.3333,
+      "complete_answer_rate": 1.0,
+      "macro_recall": 1.0
+    }
   },
   "detailed_results": [
     {
@@ -22,11 +99,42 @@
         "23",
         "16"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "any",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "23",
+              "paragraph": "1",
+              "point": "4"
+            },
+            {
+              "act": "CIT",
+              "article": "16",
+              "paragraph": "1",
+              "point": "4"
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 1,
       "hit_rate_3": 1,
       "hit_rate_5": 1,
       "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "CIT Art. 16 ust. 1 pkt 4 (Rozdział 3\nKoszty uzyskania przychodów)",
       "top_rerank_score": 0.7309
     },
@@ -40,13 +148,38 @@
       "expected_articles": [
         "86a"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "86a",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 1,
       "hit_rate_3": 1,
       "hit_rate_5": 1,
       "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "VAT Art. 86a ust. 1 pkt 1 (Rozdział 1\nOdliczenie i zwrot podatku)",
-      "top_rerank_score": 0.7306
+      "top_rerank_score": 0.7309
     },
     {
       "id": 3,
@@ -58,11 +191,36 @@
       "expected_articles": [
         "108a"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "108a",
+              "paragraph": "1a",
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 1,
       "hit_rate_3": 1,
       "hit_rate_5": 1,
       "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "VAT Art. 108a ust. 1 pkt 122 (Rozdział 1a\nMechanizm podzielonej płatności)",
       "top_rerank_score": 0.731
     },
@@ -78,13 +236,44 @@
         "2",
         "24a"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "any",
+          "citations": [
+            {
+              "act": "UOR",
+              "article": "2",
+              "paragraph": "1",
+              "point": "2"
+            },
+            {
+              "act": "PIT",
+              "article": "24a",
+              "paragraph": "4",
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 0,
       "hit_rate_3": 0,
       "hit_rate_5": 0,
       "reciprocal_rank": 0.0,
-      "faithfulness": 0.0,
-      "top_retrieved_article": "VAT Art. 109 ust. 1 pkt 2 (Rozdział 2\nEwidencje)",
-      "top_rerank_score": 0.5108
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "VAT Art. 109 ust. 1 pkt 3 (Rozdział 2\nEwidencje)",
+      "top_rerank_score": 0.5165
     },
     {
       "id": 5,
@@ -96,11 +285,36 @@
       "expected_articles": [
         "44"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "44",
+              "paragraph": "6",
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 1,
       "hit_rate_3": 1,
       "hit_rate_5": 1,
       "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "PIT Art. 44 ust. 1 pkt 1 (Rozdział 7\nPobór podatku lub zaliczek na podatek przez płatników)",
       "top_rerank_score": 0.731
     },
@@ -116,13 +330,44 @@
         "22",
         "15"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "any",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "22",
+              "paragraph": "1",
+              "point": null
+            },
+            {
+              "act": "CIT",
+              "article": "15",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 1,
       "hit_rate_3": 1,
       "hit_rate_5": 1,
       "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "PIT Art. 22 ust. 1 pkt 4 (Rozdział 4\nKoszty uzyskania przychodów)",
-      "top_rerank_score": 0.731
+      "top_rerank_score": 0.7309
     },
     {
       "id": 7,
@@ -136,11 +381,42 @@
         "26e",
         "18d"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "any",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "26e",
+              "paragraph": null,
+              "point": null
+            },
+            {
+              "act": "CIT",
+              "article": "18d",
+              "paragraph": null,
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 1,
       "hit_rate_3": 1,
       "hit_rate_5": 1,
       "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "CIT Art. 18d ust. 1 pkt 4 (Rozdział 5\nPodstawa opodatkowania i wysokość podatku)",
       "top_rerank_score": 0.731
     },
@@ -154,11 +430,36 @@
       "expected_articles": [
         "27"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "27",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 1,
       "hit_rate_3": 1,
       "hit_rate_5": 1,
       "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "PIT Art. 27 (Rozdział 6\nPodstawa obliczenia i wysokość podatku)",
       "top_rerank_score": 0.731
     },
@@ -174,13 +475,44 @@
         "193a",
         "99"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "any",
+          "citations": [
+            {
+              "act": "OP",
+              "article": "193a",
+              "paragraph": null,
+              "point": null
+            },
+            {
+              "act": "VAT",
+              "article": "99",
+              "paragraph": null,
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 0,
       "hit_rate_3": 0,
       "hit_rate_5": 0,
       "reciprocal_rank": 0.0,
-      "faithfulness": 0.0,
-      "top_retrieved_article": "ORDYNACJA Art. 183 (Rozdział 11\nDowody)",
-      "top_rerank_score": 0.7308
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "VAT Art. 109b (Rozdział 2\nEwidencje)",
+      "top_rerank_score": 0.717
     },
     {
       "id": 10,
@@ -192,13 +524,38 @@
       "expected_articles": [
         "4"
       ],
-      "hit_rate_1": 0,
-      "hit_rate_3": 0,
-      "hit_rate_5": 0,
-      "reciprocal_rank": 0.0,
-      "faithfulness": 0.0,
-      "top_retrieved_article": "UOR Art. 7 (Rozdział 1\nPrzepisy ogólne)",
-      "top_rerank_score": 0.7242
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "UOR",
+              "article": "4",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "UOR Art. 4 (Rozdział 1\nPrzepisy ogólne)",
+      "top_rerank_score": 0.731
     },
     {
       "id": 11,
@@ -210,13 +567,38 @@
       "expected_articles": [
         "111"
       ],
-      "hit_rate_1": 1,
-      "hit_rate_3": 1,
-      "hit_rate_5": 1,
-      "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
-      "top_retrieved_article": "VAT Art. 111 ust. 1 pkt 4 (Rozdział 3\nKasy rejestrujące)",
-      "top_rerank_score": 0.731
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "111",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PIT Art. 14 ust. 1 pkt 3 (Rozdział 2\nŹródła przychodów)",
+      "top_rerank_score": 0.6185
     },
     {
       "id": 12,
@@ -228,13 +610,38 @@
       "expected_articles": [
         "14"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "14",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 0,
-      "hit_rate_3": 1,
-      "hit_rate_5": 1,
-      "reciprocal_rank": 0.5,
-      "faithfulness": 0.0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "PIT Art. 5b (Rozdział 1\nPodmiot i przedmiot opodatkowania)",
-      "top_rerank_score": 0.7307
+      "top_rerank_score": 0.731
     },
     {
       "id": 13,
@@ -246,11 +653,36 @@
       "expected_articles": [
         "6"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "ZUS",
+              "article": "6",
+              "paragraph": "1",
+              "point": "5"
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 0,
-      "hit_rate_3": 0,
-      "hit_rate_5": 0,
-      "reciprocal_rank": 0.0,
-      "faithfulness": 0.0,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 0.3333,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "ZUS Art. 13 ust. 1 pkt 4 (Rozdział 2\nZasady podlegania ubezpieczeniom społecznym)",
       "top_rerank_score": 0.731
     },
@@ -264,13 +696,38 @@
       "expected_articles": [
         "5"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PP",
+              "article": "5",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 0,
       "hit_rate_3": 0,
       "hit_rate_5": 0,
       "reciprocal_rank": 0.0,
-      "faithfulness": 0.0,
-      "top_retrieved_article": "PIT Art. 5b (Rozdział 1\nPodmiot i przedmiot opodatkowania)",
-      "top_rerank_score": 0.7238
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PP Art. 7 (Rozdział 1\nPrzepisy ogólne)",
+      "top_rerank_score": 0.7226
     },
     {
       "id": 15,
@@ -282,13 +739,38 @@
       "expected_articles": [
         "42a"
       ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "42a",
+              "paragraph": null,
+              "point": null
+            }
+          ]
+        }
+      ],
       "hit_rate_1": 1,
       "hit_rate_3": 1,
       "hit_rate_5": 1,
       "reciprocal_rank": 1.0,
-      "faithfulness": 0.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
       "top_retrieved_article": "VAT Art. 42a (Rozdział 1a\nWiążąca informacja stawkowa)",
-      "top_rerank_score": 0.731
+      "top_rerank_score": 0.7311
     }
   ]
 }

@@ -91,32 +91,28 @@ def test_separation_of_duties_accountant_cannot_approve(auth_tokens):
     assert repository.get_document(doc.id).approved_version_id == ver.id
 
 
-def test_pdf_failure_produces_none_source_data_and_requires_review():
+def test_pdf_failure_produces_none_source_data_and_requires_review(tmp_path):
     """Awaria odczytu OCR skutkuje source_data=None i statusem FAILED (brak zer i fikcyjnych faktur)."""
     from tasks import process_invoice_task
 
-    dummy_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "temp_uszkodzony.pdf"))
+    dummy_path = str(tmp_path / "temp_uszkodzony.pdf")
     with open(dummy_path, "wb") as f:
         f.write(b"%PDF-corrupted-test-content")
 
-    try:
-        # Przygotowujemy próbę w bazie
-        doc, attempt, _ = repository.create_document_and_attempt_atomically(
-            tenant_id="firma_abc",
-            operator_id="jan_ksiegowy",
-            original_filename="uszkodzony.pdf",
-            storage_path=dummy_path,
-            mime_type="application/pdf",
-            sha256_hash="hash_corrupted_pdf_1"
-        )
+    # Przygotowujemy próbę w bazie
+    doc, attempt, _ = repository.create_document_and_attempt_atomically(
+        tenant_id="firma_abc",
+        operator_id="jan_ksiegowy",
+        original_filename="uszkodzony.pdf",
+        storage_path=dummy_path,
+        mime_type="application/pdf",
+        sha256_hash="hash_corrupted_pdf_1"
+    )
 
-        # Uruchamiamy procesowanie
-        with patch("tasks.extract_pdf_text", return_value=""):
-            with patch("tasks.encode_image_to_base64", side_effect=RuntimeError("OCR Error")):
-                res = process_invoice_task(attempt.id, dummy_path, "firma_abc")
-    finally:
-        if os.path.exists(dummy_path):
-            os.remove(dummy_path)
+    # Uruchamiamy procesowanie
+    with patch("tasks.extract_pdf_text", return_value=""):
+        with patch("tasks.encode_image_to_base64", side_effect=RuntimeError("OCR Error")):
+            res = process_invoice_task(attempt.id, dummy_path, "firma_abc")
 
     assert res["status"] == "REQUIRES_REVIEW"
     versions = repository.get_versions(doc.id)

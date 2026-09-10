@@ -32,8 +32,7 @@ def process_and_ingest():
     except Exception as e:
         logging.warning(f"Nie udało się połączyć z bazą danych PostgreSQL: {e}. Upewnij się, że kontener postgres-pgvector jest uruchomiony.")
 
-    total_articles = 0
-
+    all_articles = []
     for file_path in html_files:
         file_name = os.path.basename(file_path)
         logging.info(f"Parsowanie pliku: {file_name}...")
@@ -48,13 +47,14 @@ def process_and_ingest():
         for art, emb in zip(articles, embeddings):
             art["embedding"] = emb
 
-        save_articles_to_db(articles)
-        logging.info(f"Zapisano {len(articles)} artykułów z {file_name} w bazie pgvector.")
+        all_articles.extend(articles)
 
+    logging.info(f"Zakończono parsowanie. Łącznie zebrano {len(all_articles)} artykułów ze wszystkich ustaw.")
+    logging.info("Rozpoczynanie atomowego ingestu ze stagingiem w bazie PostgreSQL pgvector...")
 
-        total_articles += len(articles)
-
-    logging.info(f"Zakończono parsowanie. Łączna liczba wyekstrahowanych artykułów: {total_articles}")
+    from rag.db import ingest_articles_staged
+    result = ingest_articles_staged(all_articles, validate=True)
+    logging.info(f"✓ Atomowy ingest zakończony sukcesem: wersje {result.get('act_versions')}, zaindeksowano {result['articles_count']} artykułów.")
 
     # Automatyczny audyt braku duplikatów po zakończonym procesie
     from rag.db import verify_no_duplicates_in_db

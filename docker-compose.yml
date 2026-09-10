@@ -1,15 +1,22 @@
 services:
   redis-broker:
+    profiles: ["core", "worker-cloud", "worker-local", "all-cloud", "all-local"]
     image: redis:7.2-alpine
     container_name: karik-redis
     ports:
       - "${REDIS_PORT:-16379}:6379"
     command: redis-server --appendonly no --maxmemory 512mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     restart: unless-stopped
     networks:
       - karik-network
 
   local-ai:
+    profiles: ["ml", "worker-local", "all-local"]
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     container_name: karik-local-ai
     volumes:
@@ -27,6 +34,12 @@ services:
       -c 131072
       -ngl 99
       --alias gemma4-e4b
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/v1/models || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
     deploy:
       resources:
         reservations:
@@ -39,12 +52,13 @@ services:
       - karik-network
 
   postgres-pgvector:
+    profiles: ["core", "worker-cloud", "worker-local", "all-cloud", "all-local"]
     image: pgvector/pgvector:pg16
     container_name: karik-postgres-rag
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-karik_db}
       POSTGRES_USER: ${POSTGRES_USER:-karik_admin}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-karik_password}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be configured in .env}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
@@ -59,6 +73,7 @@ services:
       - karik-network
 
   app-module:
+    profiles: ["core", "all-cloud", "all-local"]
     build:
       context: .
       dockerfile: Dockerfile
@@ -77,20 +92,52 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_DB=${POSTGRES_DB:-karik_db}
       - POSTGRES_USER=${POSTGRES_USER:-karik_admin}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-karik_password}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be configured in .env}
       - KARIK_ENABLE_BACKGROUND_DISPATCHER=1
     depends_on:
-      - redis-broker
-      - postgres-pgvector
+      postgres-pgvector:
+        condition: service_healthy
+      redis-broker:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - karik-network
 
-  processing-worker:
+  processing-worker-cloud:
+    profiles: ["worker-cloud", "all-cloud"]
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: karik-worker
+    container_name: karik-worker-cloud
+    command: celery -A tasks worker --loglevel=info -c 4
+    volumes:
+      - shared-storage:/var/lib/karik/storage
+    environment:
+      - STORAGE_BASE_DIR=/var/lib/karik/storage
+      - KARIK_AUTH_SECRET=${KARIK_AUTH_SECRET}
+      - REDIS_URL=redis://redis-broker:6379/0
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.1-flash-lite}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres-pgvector}
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-karik_db}
+      - POSTGRES_USER=${POSTGRES_USER:-karik_admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be configured in .env}
+    depends_on:
+      postgres-pgvector:
+        condition: service_healthy
+      redis-broker:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - karik-network
+
+  processing-worker-local:
+    profiles: ["worker-local", "all-local"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: karik-worker-local
     command: celery -A tasks worker --loglevel=info -c 4
     volumes:
       - shared-storage:/var/lib/karik/storage
@@ -106,11 +153,14 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_DB=${POSTGRES_DB:-karik_db}
       - POSTGRES_USER=${POSTGRES_USER:-karik_admin}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-karik_password}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be configured in .env}
     depends_on:
-      - redis-broker
-      - local-ai
-      - postgres-pgvector
+      postgres-pgvector:
+        condition: service_healthy
+      redis-broker:
+        condition: service_healthy
+      local-ai:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - karik-network

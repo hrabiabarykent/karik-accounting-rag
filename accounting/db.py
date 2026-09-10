@@ -179,37 +179,86 @@ class AccountingRepository:
         self._lock = threading.RLock()
         self._thread_local = threading.local()
 
-        # 1. Rozpoznanie silnika bazy danych
-        req_engine = (
-            db_engine
-            or os.getenv("KARIK_DB_ENGINE")
-            or ""
-        ).lower()
+        # 1. Walidacja sprzecznych argumentów konstruktora
+        if db_engine:
+            norm_engine = db_engine.lower()
+            if norm_engine == "sqlite":
+                if database_url and database_url.startswith(("postgresql://", "postgres://")):
+                    raise DatabaseConfigurationError(
+                        "Sprzeczna konfiguracja: db_engine='sqlite' i PostgreSQL database_url"
+                    )
+            elif norm_engine in ("postgres", "postgresql"):
+                if sqlite_db_path:
+                    raise DatabaseConfigurationError(
+                        "Sprzeczna konfiguracja: db_engine='postgres' i sqlite_db_path"
+                    )
+                if database_url and database_url.startswith("sqlite:"):
+                    raise DatabaseConfigurationError(
+                        "Sprzeczna konfiguracja: db_engine='postgres' i SQLite database_url"
+                    )
 
-        raw_db_url = (
-            database_url
-            or os.getenv("DATABASE_URL")
-            or ""
-        )
+        if sqlite_db_path and database_url and database_url.startswith(("postgresql://", "postgres://")):
+            raise DatabaseConfigurationError(
+                "Sprzeczna konfiguracja: sqlite_db_path i PostgreSQL database_url"
+            )
 
-        postgres_host = os.getenv("POSTGRES_HOST")
+        # 2. Określenie efektywnego silnika bazy danych
+        req_engine = (db_engine or "").lower()
+        ambient_engine = (os.getenv("KARIK_DB_ENGINE") or "").lower()
+        ambient_url = os.getenv("ACCOUNTING_DATABASE_URL") or os.getenv("DATABASE_URL") or ""
+        effective_url = database_url or ambient_url
 
-        if req_engine == "postgres" or raw_db_url.startswith(("postgresql://", "postgres://")) or (postgres_host and req_engine != "sqlite"):
+        is_postgres_url = effective_url.startswith(("postgresql://", "postgres://"))
+        is_sqlite_url = effective_url.startswith("sqlite:")
+
+        if req_engine in ("postgres", "postgresql"):
+            target_engine = "postgres"
+        elif req_engine == "sqlite" or bool(sqlite_db_path):
+            target_engine = "sqlite"
+        elif database_url:
+            if is_postgres_url:
+                target_engine = "postgres"
+            else:
+                target_engine = "sqlite"
+        elif is_postgres_url:
+            target_engine = "postgres"
+        elif is_sqlite_url:
+            target_engine = "sqlite"
+        elif ambient_engine in ("postgres", "postgresql"):
+            target_engine = "postgres"
+        elif ambient_engine == "sqlite":
+            target_engine = "sqlite"
+        elif bool(os.getenv("POSTGRES_HOST")):
+            target_engine = "postgres"
+        else:
+            target_engine = "sqlite"
+
+        if target_engine == "postgres":
             self.engine_type = "postgres"
-            self.db_url = raw_db_url
-            self.postgres_host = postgres_host or "localhost"
-            self.postgres_port = int(os.getenv("POSTGRES_PORT", "5432"))
-            self.postgres_db = os.getenv("POSTGRES_DB", "karik_db")
-            self.postgres_user = os.getenv("POSTGRES_USER", "karik_admin")
-            self.postgres_password = os.getenv("POSTGRES_PASSWORD", "karik_password")
+            from database.config import PostgresConfig
+            if is_postgres_url:
+                cfg = PostgresConfig.from_url(effective_url, require_password=True)
+                self.db_url = effective_url
+            else:
+                cfg = PostgresConfig.from_env(require_password=True)
+                self.db_url = effective_url if is_postgres_url else None
+
+            self.postgres_host = cfg.host
+            self.postgres_port = cfg.port
+            self.postgres_db = cfg.dbname
+            self.postgres_user = cfg.user
+            self.postgres_password = cfg.password
             self._pool = None
             self._init_postgres_pool()
         else:
             self.engine_type = "sqlite"
+            self.db_url = None
             if sqlite_db_path:
                 self.sqlite_path = sqlite_db_path
-            elif raw_db_url.startswith("sqlite:///"):
-                self.sqlite_path = raw_db_url.replace("sqlite:///", "")
+            elif effective_url.startswith("sqlite:///"):
+                self.sqlite_path = effective_url.replace("sqlite:///", "")
+            elif effective_url.startswith("sqlite:"):
+                self.sqlite_path = effective_url.replace("sqlite:", "")
             else:
                 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".cache"))
                 os.makedirs(base_dir, exist_ok=True)
@@ -271,6 +320,26 @@ class AccountingRepository:
                 raise
             finally:
                 conn.close()
+
+    def close(self) -> None:
+        """Zamyka pulę połączeń PostgreSQL lub wykonuje końcowy checkpoint WAL dla SQLite."""
+        if self.engine_type == "postgres" and getattr(self, "_pool", None) is not None:
+            try:
+                self._pool.closeall()
+            except Exception as e:
+                logger.warning(f"Błąd podczas zamykania puli połączeń PostgreSQL: {e}")
+            self._pool = None
+        elif self.engine_type == "sqlite":
+            if getattr(self, "sqlite_path", None) and os.path.exists(self.sqlite_path):
+                try:
+                    import sqlite3
+                    conn = sqlite3.connect(self.sqlite_path, timeout=5.0)
+                    try:
+                        conn.execute("PRAGMA wal_checkpoint(TRUNCATE);")
+                    finally:
+                        conn.close()
+                except Exception as e:
+                    logger.warning(f"Błąd checkpointu WAL dla SQLite ({self.sqlite_path}): {e}")
 
     def _format_sql(self, sql: str) -> str:
         """Dostosowuje placeholdery do specyfiki silnika (Postgres: %s, SQLite: ?)."""

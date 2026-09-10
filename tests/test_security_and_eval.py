@@ -25,13 +25,13 @@ from datetime import date
 
 
 @pytest.mark.asyncio
-async def test_streaming_upload_limit_enforcement(monkeypatch):
+async def test_streaming_upload_limit_enforcement(monkeypatch, tmp_path):
     """
     Test weryfikujący, że upload zlicza odebrane bajty w locie
     i natychmiast przerywa przy przekroczeniu limitu oraz usuwa plik częściowy.
     """
     import accounting.storage as storage_mod
-    local_tmp = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".cache", "test_storage"))
+    local_tmp = str(tmp_path / "test_storage")
     os.makedirs(local_tmp, exist_ok=True)
     monkeypatch.setattr(storage_mod, "STORAGE_BASE_DIR", local_tmp)
 

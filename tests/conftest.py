@@ -1,5 +1,9 @@
 import os
 import sys
+import tempfile
+import uuid
+import shutil
+from pathlib import Path
 
 # 1. Ustawienie bezpiecznych kluczy testowych i twardej izolacji bazy
 os.environ["KARIK_ALLOW_EPHEMERAL_KEY"] = "1"
@@ -9,12 +13,25 @@ os.environ.setdefault("REDIS_URL", "memory://")
 os.environ["KARIK_ENVIRONMENT"] = "test"
 os.environ["KARIK_ALLOW_DB_RESET"] = "1"
 
-# Wymuszenie izolowanej bazy SQLite dla testów, zapobiegając przypadkowemu połączeniu
-# i wyczyszczeniu bazy PostgreSQL aplikacji.
-test_db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".cache", "test_karik.db"))
-os.makedirs(os.path.dirname(test_db_path), exist_ok=True)
+# Wymuszenie unikalnej dla sesji bazy SQLite oraz basetemp wewnątrz .cache/pytest-sessions projektu.
+# Zapobiega konfliktom między równoległymi sesjami pytest oraz problemom uprawnień do systemowego %TEMP%.
+BASE_DIR = Path(__file__).resolve().parent.parent
+SESSION_DIR = BASE_DIR / ".cache" / "pytest-sessions" / uuid.uuid4().hex
+SESSION_DIR.mkdir(parents=True, exist_ok=False)
+TEST_DB_PATH = SESSION_DIR / "test_karik.db"
+
 os.environ["KARIK_DB_ENGINE"] = "sqlite"
-os.environ["DATABASE_URL"] = f"sqlite:///{test_db_path.replace(os.sep, '/')}"
+os.environ["ACCOUNTING_DATABASE_URL"] = f"sqlite:///{TEST_DB_PATH.as_posix()}"
+if os.environ.get("DATABASE_URL", "").startswith("sqlite://"):
+    os.environ.pop("DATABASE_URL", None)
+os.environ.setdefault("POSTGRES_DB", "karik_db_test")
+
+
+def pytest_configure(config):
+    """Izoluje basetemp pytest wewnątrz unikalnego katalogu sesji projektu."""
+    basetemp_dir = SESSION_DIR / "tmp"
+    basetemp_dir.mkdir(parents=True, exist_ok=True)
+    config.option.basetemp = str(basetemp_dir)
 
 # 2. Ustawienie lokalnych katalogów cache wewnątrz repozytorium (rozwiązanie błędu WinError 183 z .unsloth)
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -49,3 +66,32 @@ def clean_database():
     repository.reset_database()
     yield
     repository.reset_database()
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """Zamyka połączenia z bazą danych i bezpiecznie usuwa sesyjny katalog bazy."""
+    import warnings
+    import gc
+    import time
+    try:
+        from accounting.db import repository
+        repository.close()
+    except Exception as exc:
+        warnings.warn(f"Błąd podczas zamykania repozytorium: {exc}", RuntimeWarning)
+
+    gc.collect()
+
+    if SESSION_DIR.exists():
+        for attempt in range(3):
+            try:
+                shutil.rmtree(SESSION_DIR)
+                break
+            except OSError as exc:
+                if attempt == 2:
+                    warnings.warn(
+                        f"Nie udało się usunąć katalogu sesji {SESSION_DIR}: {exc}",
+                        RuntimeWarning,
+                    )
+                else:
+                    time.sleep(0.05)
+                    gc.collect()

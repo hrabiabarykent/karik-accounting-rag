@@ -97,7 +97,7 @@ def test_safe_ddl_migration_reentrant_and_no_abort():
         assert cursor.fetchone()[0] == 1
 
 
-def test_erp_export_status_fidelity_file_drop_vs_confirmed(monkeypatch, auditor_auth_headers, dummy_approved_invoice):
+def test_erp_export_status_fidelity_file_drop_vs_confirmed(monkeypatch, auditor_auth_headers, dummy_approved_invoice, tmp_path):
     """
     Test 2: Zapis pliku wymiany XML nie staje się fikcyjnym 'EXPORT_CONFIRMED'.
     - Transmisja plikowa Comarch Optima zwraca EXPORT_TRANSMITTED.
@@ -106,7 +106,7 @@ def test_erp_export_status_fidelity_file_drop_vs_confirmed(monkeypatch, auditor_
     - Audytor może uzgodnić stan przez /v1/invoice/erp-reconcile.
     """
     from accounting.erp_connector import erp_connector
-    local_exchange = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".cache", "test_optima_exchange"))
+    local_exchange = str(tmp_path / "test_optima_exchange")
     os.makedirs(local_exchange, exist_ok=True)
     monkeypatch.setattr(erp_connector, "xml_exchange_dir", local_exchange)
     doc, ver = dummy_approved_invoice

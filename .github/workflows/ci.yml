@@ -1,35 +1,171 @@
-name: CI Pipeline
+name: KARIK CI & Quality Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, develop ]
+  workflow_dispatch:
 
 jobs:
-  test:
-    name: Run Automated Tests & Quality Checks
+  test-linux:
+    name: Test (Ubuntu - Py ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: karik_db_test
+          POSTGRES_USER: karik_admin
+          POSTGRES_PASSWORD: test_password_123
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: karik_db_test
+      POSTGRES_USER: karik_admin
+      POSTGRES_PASSWORD: test_password_123
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
-          cache: "pip"
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv & build tools
+        run: |
+          python -m pip install --upgrade pip uv
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          uv pip install --system -r requirements.txt
+          python -m spacy download pl_core_news_sm
 
-      - name: Download SpaCy Polish NLP model
+      - name: Apply PostgreSQL database migrations
         run: |
-          python -m spacy download pl_core_news_lg || python -m spacy download pl_core_news_sm
+          python -c "from database.migrations import apply_migrations; apply_migrations()"
 
-      - name: Run Pytest Suite
+      - name: Run unit test suite
         run: |
-          pytest tests/ -v --maxfail=1
+          pytest tests/ -v -m "not postgres and not docker"
+
+      - name: Run PostgreSQL integration test suite (mandatory)
+        run: |
+          pytest tests/ -v -m postgres
+
+      - name: Verify README metrics synchronization
+        run: |
+          python scripts/update_readme_metrics.py --check
+
+  test-windows:
+    name: Test (Windows - Py ${{ matrix.python-version }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv & build tools
+        run: |
+          python -m pip install --upgrade pip uv
+
+      - name: Install dependencies
+        run: |
+          uv pip install --system -r requirements.txt
+          python -m spacy download pl_core_news_sm
+
+      - name: Run unit test suite (Windows)
+        run: |
+          pytest tests/ -v -m "not postgres and not docker"
+
+      - name: Verify README metrics synchronization
+        run: |
+          python scripts/update_readme_metrics.py --check
+
+  ci-ml-benchmark:
+    name: ML RAG Benchmark Evaluation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'run-ml-eval')
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: karik_db
+          POSTGRES_USER: karik_admin
+          POSTGRES_PASSWORD: test_password_123
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: karik_db
+      POSTGRES_USER: karik_admin
+      POSTGRES_PASSWORD: test_password_123
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv & dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv pip install --system -r requirements.txt
+          python -m spacy download pl_core_news_sm
+
+      - name: Apply PostgreSQL database migrations
+        run: |
+          python -c "from database.migrations import apply_migrations; apply_migrations()"
+
+      - name: Download & verify NLP models (SentenceTransformer & CrossEncoder)
+        run: |
+          python scripts/download_models.py
+
+      - name: Ingest legal acts into vector store
+        run: |
+          python scripts/ingest_laws.py
+
+      - name: Run Polish tax law RAG evaluation benchmark
+        run: |
+          python eval_rag.py
+
+      - name: Upload benchmark evaluation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: eval_results.json
+          if-no-files-found: error
