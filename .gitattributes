@@ -6,9 +6,13 @@
 
 *.html linguist-detectable=false
 *.html linguist-vendored=true
+*.html -whitespace
 *.json linguist-detectable=false
 data/** linguist-vendored=true
 data/** linguist-detectable=false
+data/** -whitespace
+data/pobrane_ustawy/** -whitespace
+data/pobrane_ustawy/*.html -whitespace -diff
 static/** linguist-vendored=true
 static/** linguist-detectable=false
 ui.html linguist-detectable=false

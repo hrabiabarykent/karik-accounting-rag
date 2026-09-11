@@ -10,6 +10,13 @@ os.environ["TRANSFORMERS_OFFLINE"] = "1"
 # Dodanie katalogu głównego projektu do sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 from rag.parser import extract_articles_from_html
 from rag.db import init_database, save_articles_to_db
 from rag.retriever import generate_embeddings_batch
@@ -43,23 +50,36 @@ def process_and_ingest():
         texts_to_embed = [f"{art['full_title']}\n{art['clean_text']}" for art in articles]
         logging.info(f"Generowanie embeddingów dla {len(texts_to_embed)} artykułów w paczkach...")
         
-        embeddings = generate_embeddings_batch(texts_to_embed, batch_size=32)
+        embeddings = generate_embeddings_batch(texts_to_embed, batch_size=64)
         for art, emb in zip(articles, embeddings):
             art["embedding"] = emb
+        logging.info(f"[OK] Wygenerowano {len(embeddings)} wektorów dla {file_name}.")
 
         all_articles.extend(articles)
+
+    manifest_path = os.path.join(base_dir, "data", "manifest.json")
+    manifest_checksum = None
+    if os.path.exists(manifest_path):
+        import hashlib
+        with open(manifest_path, "rb") as mf:
+            manifest_checksum = hashlib.sha256(mf.read()).hexdigest()
 
     logging.info(f"Zakończono parsowanie. Łącznie zebrano {len(all_articles)} artykułów ze wszystkich ustaw.")
     logging.info("Rozpoczynanie atomowego ingestu ze stagingiem w bazie PostgreSQL pgvector...")
 
     from rag.db import ingest_articles_staged
-    result = ingest_articles_staged(all_articles, validate=True)
-    logging.info(f"✓ Atomowy ingest zakończony sukcesem: wersje {result.get('act_versions')}, zaindeksowano {result['articles_count']} artykułów.")
+    result = ingest_articles_staged(
+        all_articles,
+        source_file="data/manifest.json",
+        source_checksum=manifest_checksum,
+        validate=True
+    )
+    logging.info(f"[OK] Atomowy ingest zakończony sukcesem: wersje {result.get('act_versions')}, zaindeksowano {result['articles_count']} artykułów.")
 
     # Automatyczny audyt braku duplikatów po zakończonym procesie
     from rag.db import verify_no_duplicates_in_db
     dup_stats = verify_no_duplicates_in_db()
-    logging.info(f"✓ Audyt spójności bazy zakończony sukcesem: {dup_stats['total_articles']} artykułów (0 duplikatów).")
+    logging.info(f"[OK] Audyt spójności bazy zakończony sukcesem: {dup_stats['total_articles']} artykułów (0 duplikatów).")
 
 if __name__ == "__main__":
     process_and_ingest()

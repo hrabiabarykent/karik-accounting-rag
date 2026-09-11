@@ -69,42 +69,42 @@ def generate_metrics_markdown(results_data: Dict[str, Any]) -> str:
     grounding = gen_info.get("heuristic_grounding_score")
 
     if gen_status == "not_run" or faith is None:
-        faith_str = f"`not_run` (brak wywołania LLM w trybie offline/CI)"
+        faith_str = f"`not_run` (no LLM calls during offline/CI evaluation)"
     else:
         faith_str = f"**{format_pct(faith)}** (status: `{gen_status}`)"
 
     if gen_status == "not_run" or grounding is None:
-        grounding_str = f"`not_run` (brak wywołania LLM w trybie offline/CI)"
+        grounding_str = f"`not_run` (no LLM calls during offline/CI evaluation)"
     else:
         grounding_str = f"**{format_pct(grounding)}**"
 
     lines = [
         MARKER_START,
-        f"*Ostatnia ewaluacja benchmarku: `{timestamp}`* | *Liczba scenariuszy testowych: `{total_q}`*",
+        f"*Latest benchmark evaluation: `{timestamp}`* | *Evaluated test scenarios: `{total_q}`*",
         "",
-        "### 🎯 Skuteczność Retrievalu i Pokrycia Cytowań",
+        "### 🎯 Retrieval Performance & Citation Recall",
         "",
-        "| Metryka Wyszukiwania | Poziom Artykułu | Poziom Ścisły (Exact) | Znaczenie Biznesowe |",
+        "| Retrieval Metric | Article Level | Exact Level | Business Significance |",
         "| :--- | :---: | :---: | :--- |",
-        f"| **Hit Rate @ 1** | **{format_pct(h1)}** | **{format_pct(h1_ex)}** | Odnalezienie właściwego przepisu na 1. pozycji |",
-        f"| **Hit Rate @ 3** | **{format_pct(h3)}** | **{format_pct(h3_ex)}** | Obecność właściwego przepisu w Top 3 |",
-        f"| **Hit Rate @ 5** | **{format_pct(h5)}** | **{format_pct(h5_ex)}** | Obecność właściwego przepisu w Top 5 |",
-        f"| **MRR (Mean Reciprocal Rank)** | **{format_float(mrr)}** | **{format_float(mrr_ex)}** | Średnia odwrotność rangi pierwszego trafienia |",
-        f"| **Macro Citation Recall** | **{format_pct(recall)}** | — | Średnie pokrycie wymaganych jednostek redakcyjnych |",
-        f"| **Complete-Answer Rate** | **{format_pct(compl)}** | — | Odsetek pytań z kompletnym zestawem przepisów |",
+        f"| **Hit Rate @ 1** | **{format_pct(h1)}** | **{format_pct(h1_ex)}** | Primary legal provision found at rank 1 |",
+        f"| **Hit Rate @ 3** | **{format_pct(h3)}** | **{format_pct(h3_ex)}** | Primary legal provision found within Top 3 |",
+        f"| **Hit Rate @ 5** | **{format_pct(h5)}** | **{format_pct(h5_ex)}** | Primary legal provision found within Top 5 |",
+        f"| **MRR (Mean Reciprocal Rank)** | **{format_float(mrr)}** | **{format_float(mrr_ex)}** | Mean reciprocal rank of first relevant hit |",
+        f"| **Macro Citation Recall** | **{format_pct(recall)}** | — | Average recall of required statutory citations |",
+        f"| **Complete-Answer Rate** | **{format_pct(compl)}** | — | Percentage of questions with 100% citations retrieved |",
         "",
-        "### 🧠 Jakość Generacji i Weryfikacja Ugruntowania",
-        f"- **Status ewaluacji generacji**: `{gen_status}`",
-        f"- **Faithfulness (Wierność Semantyczna)**: {faith_str}",
+        "### 🧠 Generation Quality & Grounding Verification",
+        f"- **Generation evaluation status**: `{gen_status}`",
+        f"- **Faithfulness**: {faith_str}",
         f"- **Heuristic Grounding Score**: {grounding_str}",
     ]
 
     if metrics_by_act:
         lines.extend([
             "",
-            "### 🏛️ Rozbicie Wyników per Akt Prawny",
+            "### 🏛️ Breakdown by Statutory Act",
             "",
-            "| Akt Prawny | Liczba Pytań | Hit Rate @ 3 | Complete-Answer | MRR |",
+            "| Statutory Act | Questions Count | Hit Rate @ 3 | Complete-Answer | MRR |",
             "| :--- | :---: | :---: | :---: | :---: |",
         ])
         for act, act_m in sorted(metrics_by_act.items()):

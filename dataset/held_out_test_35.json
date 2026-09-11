@@ -1,0 +1,992 @@
+[
+  {
+    "id": 201,
+    "category": "VAT - Stawka podstawowa",
+    "query": "Jaka jest podstawowa stawka podatku od towarów i usług w Polsce i na podstawie którego artykułu obowiązuje?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "41",
+      "146ef"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "any",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "41",
+            "paragraph": "1"
+          },
+          {
+            "act": "VAT",
+            "article": "146ef",
+            "paragraph": "1",
+            "point": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "23%",
+      "stawka podatku",
+      "towary i usługi"
+    ]
+  },
+  {
+    "id": 202,
+    "category": "VAT - Termin wystawienia faktury",
+    "query": "Do którego dnia miesiąca następującego po miesiącu dostawy towaru lub wykonania usługi należy wystawić fakturę VAT?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "106i"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "106i",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "15. dnia miesiąca",
+      "wystawienie faktury",
+      "dostawa towarów"
+    ]
+  },
+  {
+    "id": 203,
+    "category": "VAT - Wewnątrzwspólnotowa dostawa towarów WDT",
+    "query": "Czym jest wewnątrzwspólnotowa dostawa towarów WDT w rozumieniu przepisów ustawy o podatku od towarów i usług?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "13"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "13",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "WDT",
+      "wywóz towarów",
+      "terytorium państwa członkowskiego"
+    ]
+  },
+  {
+    "id": 204,
+    "category": "VAT - Mały podatnik metoda kasowa",
+    "query": "Na czym polega metoda kasowa rozliczania podatku VAT dostępna dla małych podatników?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "21"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "21",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "metoda kasowa",
+      "mały podatnik",
+      "otrzymanie zapłaty"
+    ]
+  },
+  {
+    "id": 205,
+    "category": "VAT - Termin odliczenia VAT naliczonego",
+    "query": "W jakim terminie powstaje prawo do obniżenia kwoty podatku należnego o kwotę podatku naliczonego w VAT?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "86"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "86",
+            "paragraph": "10"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "podatek naliczony",
+      "powstanie obowiązku podatkowego",
+      "rozliczenie"
+    ]
+  },
+  {
+    "id": 206,
+    "category": "CIT - Odliczenie straty podatkowej",
+    "query": "Na jakich zasadach podatnik CIT może obniżyć dochód o wysokość straty ze źródła przychodów poniesionej w latach ubiegłych?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "7"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "7",
+            "paragraph": "5"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "strata",
+      "najbliższe kolejno po sobie następujące 5 lat",
+      "5 000 000 zł"
+    ]
+  },
+  {
+    "id": 207,
+    "category": "CIT - Przychody z zysków kapitałowych",
+    "query": "Jakie kategorie przychodów ustawa o CIT kwalifikuje do odrębnego źródła przychodów z zysków kapitałowych?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "7b"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "7b",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zyski kapitałowe",
+      "dywidendy",
+      "udziały"
+    ]
+  },
+  {
+    "id": 208,
+    "category": "CIT - Podatek od przychodów z budynków",
+    "query": "Kiedy powstaje obowiązek zapłaty minimalnego podatku dochodowego od przychodów z budynków o wartości początkowej przekraczającej 10 mln zł?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "24b"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "24b",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "budynek",
+      "wartość początkowa",
+      "10 000 000 zł"
+    ]
+  },
+  {
+    "id": 209,
+    "category": "CIT - Darowizny odliczane od dochodu",
+    "query": "Jaki jest limit odliczenia darowizn na cele pożytku publicznego i kultu religijnego od podstawy opodatkowania w CIT?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "18"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "18",
+            "paragraph": "1",
+            "point": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "darowizna",
+      "10% dochodu",
+      "cele pożytku publicznego"
+    ]
+  },
+  {
+    "id": 210,
+    "category": "CIT - Podatek u źródła odsetki i licencje",
+    "query": "Jaka jest podstawowa stawka podatku dochodowego u źródła od wypłacanych zagranicznym podmiotom odsetek i praw autorskich wg CIT?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "21"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "21",
+            "paragraph": "1",
+            "point": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "20%",
+      "odsetki",
+      "prawa autorskie"
+    ]
+  },
+  {
+    "id": 211,
+    "category": "PIT - Wspólne opodatkowanie małżonków",
+    "query": "Jakie warunki muszą spełnić małżonkowie, aby móc złożyć wspólne roczne zeznanie podatkowe w PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "6"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "6",
+            "paragraph": "2"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "wspólne opodatkowanie",
+      "wspólność majątkowa",
+      "małżonkowie"
+    ]
+  },
+  {
+    "id": 212,
+    "category": "PIT - Podatek Belki kapitały pieniężne",
+    "query": "Ile wynosi stawka podatku dochodowego od zysków kapitałowych i odsetek z rachunków bankowych tzw. podatek Belki w PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "30b"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "30b",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "19%",
+      "zyski kapitałowe",
+      "odpłatne zbycie papierów wartościowych"
+    ]
+  },
+  {
+    "id": 213,
+    "category": "PIT - Diety w podróży służbowej",
+    "query": "Do jakiej wysokości diety i inne należności za czas podróży służbowej pracownika są zwolnione od podatku dochodowego PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "21"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "21",
+            "paragraph": "1",
+            "point": "16"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "diety",
+      "podróż służbowa",
+      "zwolnienie z podatku"
+    ]
+  },
+  {
+    "id": 214,
+    "category": "PIT - Ulga mieszkaniowa",
+    "query": "W jakim terminie należy wydatkować przychód ze sprzedaży nieruchomości na własne cele mieszkaniowe, aby skorzystać ze zwolnienia z PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "21"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "21",
+            "paragraph": "1",
+            "point": "131"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "własne cele mieszkaniowe",
+      "3 lata",
+      "zwolnienie podatkowe"
+    ]
+  },
+  {
+    "id": 215,
+    "category": "PIT - Ulga rehabilitacyjna",
+    "query": "Jakie wydatki na cele rehabilitacyjne oraz związane z ułatwieniem wykonywania czynności życiowych podlegają odliczeniu od dochodu w PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "26"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "26",
+            "paragraph": "7a"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "ulga rehabilitacyjna",
+      "niepełnosprawność",
+      "odliczenie od dochodu"
+    ]
+  },
+  {
+    "id": 216,
+    "category": "Ordynacja - Korekta deklaracji",
+    "query": "Na jakich zasadach i w jakim terminie podatnik ma prawo skorygować uprzednio złożoną deklarację podatkową?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "81"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "81",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "korekta deklaracji",
+      "poprawienie błędu",
+      "złożenie deklaracji korygującej"
+    ]
+  },
+  {
+    "id": 217,
+    "category": "Ordynacja - Tajemnica skarbowa",
+    "query": "Jakie informacje i dane zebrane w toku postępowania podatkowego podlegają rygorowi tajemnicy skarbowej?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "293"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "293",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "tajemnica skarbowa",
+      "dane zawarte w deklaracjach",
+      "akty sprawy"
+    ]
+  },
+  {
+    "id": 218,
+    "category": "Ordynacja - Zawieszenie przedawnienia",
+    "query": "W jakich okolicznościach następuje zawieszenie biegu terminu przedawnienia zobowiązania podatkowego z uwagi na wszczęcie postępowania karnego skarbowego?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "70"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "70",
+            "paragraph": "6"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zawieszenie biegu terminu",
+      "postępowanie o przestępstwo skarbowe",
+      "zawiadomienie"
+    ]
+  },
+  {
+    "id": 219,
+    "category": "Ordynacja - Nadpłata podatku",
+    "query": "Co stanowi nadpłatę podatku w rozumieniu przepisów Ordynacji podatkowej?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "72"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "72",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "nadpłata",
+      "nadpłacony lub nienależnie zapłacony podatek"
+    ]
+  },
+  {
+    "id": 220,
+    "category": "Ordynacja - Moc ochronna interpretacji",
+    "query": "Na czym polega zasada nieszkodzenia i funkcja gwarancyjna wynikająca z zastosowania się do wydanej interpretacji indywidualnej?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "14k"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "14k",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "ochrona",
+      "zastosowanie się do interpretacji",
+      "nie może szkodzić"
+    ]
+  },
+  {
+    "id": 221,
+    "category": "UoR - Polityka rachunkowości",
+    "query": "Co powinna zawierać dokumentacja opisująca przyjęte przez jednostkę zasady polityki rachunkowości?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "10"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "10",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "polityka rachunkowości",
+      "zakładowy plan kont",
+      "rok obrotowy"
+    ]
+  },
+  {
+    "id": 222,
+    "category": "UoR - Amortyzacja bilansowa",
+    "query": "Jak ustala się okres i stawkę amortyzacji środków trwałych dla celów bilansowych w myśl Ustawy o Rachunkowości?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "32"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "32",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "odpisy amortyzacyjne",
+      "okres ekonomicznej użyteczności",
+      "środki trwałe"
+    ]
+  },
+  {
+    "id": 223,
+    "category": "UoR - Zatwierdzenie sprawozdania finansowego",
+    "query": "W jakim terminie organ zatwierdzający ma obowiązek zatwierdzić roczne sprawozdanie finansowe jednostki?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "53"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "53",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "6 miesięcy",
+      "dzień bilansowy",
+      "zatwierdzenie sprawozdania"
+    ]
+  },
+  {
+    "id": 224,
+    "category": "UoR - Złożenie sprawozdania do KRS",
+    "query": "W jakim terminie od dnia zatwierdzenia rocznego sprawozdania finansowego kierownik jednostki ma obowiązek złożyć je we właściwym rejestrze sądowym?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "69"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "69",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "15 dni",
+      "rejestr sądowy",
+      "złożenie sprawozdania"
+    ]
+  },
+  {
+    "id": 225,
+    "category": "UoR - Definicja środków trwałych",
+    "query": "Jakie warunki musi spełniać składnik majątku, aby został zakwalifikowany jako środek trwały w Ustawie o Rachunkowości?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "3"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "3",
+            "paragraph": "1",
+            "point": "15"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "środki trwałe",
+      "przewidywany okres ekonomicznej użyteczności",
+      "kompletne i zdatne do użytku"
+    ]
+  },
+  {
+    "id": 226,
+    "category": "ZUS - Podstawa wymiaru składek pracowników",
+    "query": "Co stanowi podstawę wymiaru składek na ubezpieczenia emerytalne i rentowe pracowników podlegających obowiązkowemu ubezpieczeniu?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "18"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "18",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "podstawa wymiaru składek",
+      "przychód ze stosunku pracy",
+      "ubezpieczeni"
+    ]
+  },
+  {
+    "id": 227,
+    "category": "ZUS - Wyrejestrowanie ubezpieczonego",
+    "query": "W jakim terminie od dnia ustania tytułu do ubezpieczeń płatnik składek ma obowiązek wyrejestrować osobę z ubezpieczeń w ZUS?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "36"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "36",
+            "paragraph": "11"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "7 dni",
+      "wyrejestrowanie z ubezpieczeń",
+      "ustanie tytułu"
+    ]
+  },
+  {
+    "id": 228,
+    "category": "ZUS - Odpowiedzialność za nieopłacenie składek",
+    "query": "Jakie sankcje i odsetki za zwłokę stosuje się w razie nieopłacenia składek na ubezpieczenia społeczne w ustawowym terminie?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "23"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "23",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "odsetki za zwłokę",
+      "nieopłacenie składek",
+      "Ordynacja podatkowa"
+    ]
+  },
+  {
+    "id": 229,
+    "category": "ZUS - Finansowanie składek emerytalnych",
+    "query": "W jakiej części składka na ubezpieczenie emerytalne pracownika jest finansowana przez ubezpieczonego, a w jakiej przez płatnika składek?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "16"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "16",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "w równych częściach",
+      "finansowanie składki",
+      "ubezpieczony i płatnik"
+    ]
+  },
+  {
+    "id": 230,
+    "category": "ZUS - Stopa procentowa składek",
+    "query": "Ile wynosi łączna stopa procentowa składki na ubezpieczenie emerytalne i rentowe określona w ustawie o systemie ubezpieczeń społecznych?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "22"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "22",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "19,52%",
+      "stopa procentowa",
+      "ubezpieczenie emerytalne"
+    ]
+  },
+  {
+    "id": 231,
+    "category": "PP - Zasada in dubio pro libertate",
+    "query": "Na czym polega zasada przyjaznej interpretacji przepisów prawa in dubio pro libertate określona w Prawie Przedsiębiorców?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "11"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "11",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "in dubio pro libertate",
+      "wątpliwości na korzyść przedsiębiorcy",
+      "nierozstrzygnięte wątpliwości"
+    ]
+  },
+  {
+    "id": 232,
+    "category": "PP - Zakaz podwójnej kontroli",
+    "query": "Czy organ kontroli może prowadzić więcej niż jedną kontrolę działalności gospodarczej przedsiębiorcy w tym samym czasie?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "54"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "54",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zakaz równoczesnego prowadzenia kontroli",
+      "jedna kontrola",
+      "organ kontroli"
+    ]
+  },
+  {
+    "id": 233,
+    "category": "PP - Definicja działalności gospodarczej",
+    "query": "Jak ustawa Prawo Przedsiębiorców definiuje działalność gospodarczą?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "3"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "3"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zorganizowana działalność zarobkowa",
+      "we własnym imieniu",
+      "w sposób ciągły"
+    ]
+  },
+  {
+    "id": 234,
+    "category": "PP - Książka kontroli",
+    "query": "Jaki dokument ma obowiązek prowadzić przedsiębiorca w celu ewidencjonowania przeprowadzanych kontroli gospodarczych?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "57"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "57",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "książka kontroli",
+      "postać papierowa lub elektroniczna",
+      "wpisy organu"
+    ]
+  },
+  {
+    "id": 235,
+    "category": "PP - Sprzeciw wobec czynności kontrolnych",
+    "query": "W jakim terminie przedsiębiorca może wnieść sprzeciw wobec podjęcia i wykonywania czynności kontrolnych z naruszeniem przepisów prawa?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "59"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "59",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "sprzeciw",
+      "3 dni robocze",
+      "naruszenie przepisów"
+    ]
+  }
+]

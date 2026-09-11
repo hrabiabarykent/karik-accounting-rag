@@ -1,17 +1,36 @@
-import re
 import os
+import re
+from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional
 from bs4 import BeautifulSoup, Tag
+from rag.units import normalize_act, normalize_article_token, normalize_sub_unit, build_unit_id
 
 ACT_CODE_MAP = {
     "PIT.html": ("PIT", "Ustawa o podatku dochodowym od osób fizycznych"),
     "CIT.html": ("CIT", "Ustawa o podatku dochodowym od osób prawnych"),
     "VAT.html": ("VAT", "Ustawa o podatku od towarów i usług"),
-    "Ordynacja_Podatkowa.html": ("ORDYNACJA", "Ordynacja Podatkowa"),
+    "Ordynacja_Podatkowa.html": ("OP", "Ordynacja podatkowa"),
     "UoR_Rachunkowosc.html": ("UOR", "Ustawa o rachunkowości"),
     "ZUS_System_Ubezpieczen.html": ("ZUS", "Ustawa o systemie ubezpieczeń społecznych"),
     "Prawo_Przedsiebiorcow.html": ("PP", "Ustawa - Prawo przedsiębiorców"),
 }
+
+
+@dataclass
+class LegalUnit:
+    act_code: str
+    article: str
+    paragraph: Optional[str] = None
+    point: Optional[str] = None
+    letter: Optional[str] = None
+    unit_type: str = "article"  # 'article', 'paragraph', 'point', 'letter'
+    unit_id: str = ""
+    parent_unit_id: Optional[str] = None
+    text: str = ""
+    parent_intro: str = ""
+    chapter: str = ""
+    act_title: str = ""
+    children: List["LegalUnit"] = field(default_factory=list)
 
 
 def clean_html_text(text: str) -> str:
@@ -24,136 +43,46 @@ def clean_html_text(text: str) -> str:
     return text.strip()
 
 
-def parse_unit_dom_sota(unit: Tag, act_code: str, act_title: str, chapter_title: str, art_num: str) -> List[Dict[str, Any]]:
+def remove_editorial_noise(tag: Tag):
+    """Usuwa przypisy i odnośniki redakcyjne (unit_odno, pro-comm, odno_XXX)."""
+    for noise in tag.find_all(class_=lambda c: c and any(x in c for x in ['unit_odno', 'pro-comm', 'pro-none'])):
+        if noise.name not in ['h3', 'h4', 'h5']:
+            noise.decompose()
+    for noise in tag.find_all(id=re.compile(r'odno_\d+')):
+        noise.decompose()
+
+
+def extract_article_number_from_unit(unit: Tag) -> str:
+    """Ekstrahuje czysty numer artykułu z nagłówka h3 lub id."""
+    h3_art = unit.find("h3")
+    if h3_art:
+        txt = clean_html_text(h3_art.get_text())
+        m = re.search(r'Art\.\s*([\d\w]+)', txt, re.IGNORECASE)
+        if m:
+            return normalize_article_token(m.group(1))
+    uid = unit.get("id", "")
+    m = re.search(r'arti_([\d\w]+)', uid, re.IGNORECASE)
+    if m:
+        return normalize_article_token(m.group(1))
+    return ""
+
+
+def extract_legal_tree(html_content: str, act_code: str, act_title: str) -> List[LegalUnit]:
     """
-    Parsowanie SOTA z wykorzystaniem struktury drzewiastej DOM (HTML Sejmu ISAP).
-    Wyciąga pojedyncze punkty/ustępy z wstrzykiwaniem metadanych i zachowaniem Parent Context.
+    Poziom 1: Ekstrakcja drzewa LegalUnit z DOM Sejmu ISAP.
+    Obsługuje unit_arti -> unit_pass / unit_para -> unit_pint -> unit_lett.
     """
-    full_unit_text = clean_html_text(unit.get_text(separator="\n"))
-
-    # Jeśli cały artykuł jest zwięzły (<= 5000 znaków), zwracamy go w całości z ustrukturyzowanymi metadanymi
-    if len(full_unit_text) <= 5000:
-        meta_content = (
-            f"[AKTYWNE PRAWO]: {act_title}\n"
-            f"[ROZDZIAŁ]: {chapter_title if chapter_title else 'Główny'}\n"
-            f"[JEDNOSTKA]: {act_code} Art. {art_num}\n\n"
-            f"{full_unit_text}"
-        )
-        return [{
-            "act_code": act_code,
-            "act_title": act_title,
-            "chapter": chapter_title,
-            "article_number": art_num,
-            "full_title": f"{act_code} Art. {art_num}" + (f" ({chapter_title})" if chapter_title else ""),
-            "content": meta_content,
-            "clean_text": meta_content,
-            "year_effective": 2026,
-            "status": "OBOWIĄZUJĄCY"
-        }]
-
-    # DLA DŁUGICH ARTYKUŁÓW-KATALOGÓW (> 5000 znaków) STOSUJEMY PARSOWANIE DRZEWIASTE DOM SOTA:
-    chunks = []
-
-    # 1. Wyprowadzenie wpisu głównego (Parent Intro)
-    intro_match = re.search(r'^(.*?)(?=\n\s*(?:1\)|pkt\s*1\)))', full_unit_text, re.DOTALL)
-    if intro_match:
-        intro_text = intro_match.group(1).strip()
-    else:
-        intro_text = full_unit_text[:250].strip()
-
-    # 2. Wyciągnięcie ustępów doprecyzowujących (np. ust. 5a, 5b, 5c, 5e, 5f o samochodach)
-    exec_sections = {}
-    exec_matches = re.finditer(r'\n\s*(\d+[a-z]?)\.\n(.*?)(?=\n\s*\d+[a-z]?\.\n|\Z)', full_unit_text, re.DOTALL)
-    for m in exec_matches:
-        sec_num = m.group(1)
-        sec_text = m.group(2).strip()
-        exec_sections[sec_num] = f"ust. {sec_num}: {sec_text}"
-
-    # 3. Dzielimy treść artykułu po poszczególnych punktach (np. 1), 2), 47a))
-    point_blocks = re.split(r'\n(?=\s*\d+[a-z]?\))', full_unit_text)
-    
-    for block in point_blocks:
-        block_text = block.strip()
-        num_match = re.match(r'^\s*(\d+[a-z]?)\)', block_text)
-        if not num_match:
-            continue
-
-        pkt_num = num_match.group(1)
-        sub_art_num = f"{art_num} ust. 1 pkt {pkt_num}"
-
-        # ODCIĘCIE OGONA: ścinamy dalsze ustępy (np. ust. 3b., ust. 4.), aby punkt zawierał WYŁĄCZNIE własną treść!
-        clean_pkt_body = re.split(r'\n\s*\d+[a-z]?\.\n', block_text)[0].strip()
-
-        # Doklejamy właściwe ustępy doprecyzowujące (np. ust. 5e o limicie 225 000 zł dla aut elektrycznych do pkt 47a)
-        related_info = ""
-        if pkt_num in {"4", "46", "46a", "47a"}:
-            car_execs = [exec_sections[k] for k in ["5a", "5b", "5c", "5d", "5e", "5f", "5g", "5h"] if k in exec_sections]
-            if car_execs:
-                related_info = "\n\n[POWIĄZANE PREPISY DOPRECYZOWUJĄCE LIMIT I EKSPLOATACJĘ]:\n" + "\n".join(car_execs[:4])
-
-        formatted_content = (
-            f"[AKTYWNE PRAWO]: {act_title}\n"
-            f"[ROZDZIAŁ]: {chapter_title if chapter_title else 'Główny'}\n"
-            f"[JEDNOSTKA]: {act_code} Art. {sub_art_num}\n\n"
-            f"Wprowadzenie: {intro_text}\n\n"
-            f"Treść przepisu:\n{clean_pkt_body}"
-            f"{related_info}"
-        )
-
-        chunks.append({
-            "act_code": act_code,
-            "act_title": act_title,
-            "chapter": chapter_title,
-            "article_number": sub_art_num,
-            "full_title": f"{act_code} Art. {sub_art_num}" + (f" ({chapter_title})" if chapter_title else ""),
-            "content": formatted_content,
-            "clean_text": formatted_content,
-            "year_effective": 2026,
-            "status": "OBOWIĄZUJĄCY"
-        })
-
-    return chunks if chunks else [{
-        "act_code": act_code,
-        "act_title": act_title,
-        "chapter": chapter_title,
-        "article_number": art_num,
-        "full_title": f"{act_code} Art. {art_num}" + (f" ({chapter_title})" if chapter_title else ""),
-        "content": full_unit_text,
-        "clean_text": full_unit_text,
-        "year_effective": 2026,
-        "status": "OBOWIĄZUJĄCY"
-    }]
-
-
-def extract_articles_from_html(file_path: str) -> List[Dict[str, Any]]:
-    file_name = os.path.basename(file_path)
-    act_code, act_title = ACT_CODE_MAP.get(file_name, (os.path.splitext(file_name)[0].upper(), f"Ustawa ({file_name})"))
-
-    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-        html_content = f.read()
-
     soup = BeautifulSoup(html_content, "html.parser")
-    h1_tag = soup.find("h1")
-    if h1_tag:
-        extracted_title = clean_html_text(h1_tag.get_text())
-        if len(extracted_title) > 5:
-            act_title = extracted_title
+    articles: List[LegalUnit] = []
 
-    articles = []
     arti_units = soup.find_all("div", class_=lambda c: c and "unit_arti" in c)
     if not arti_units:
         arti_units = soup.find_all(["div", "section"], id=re.compile(r'arti_[\d\w]+'))
 
     for unit in arti_units:
-        h3_art = unit.find("h3")
-        art_num = ""
-        if h3_art:
-            art_num_text = clean_html_text(h3_art.get_text())
-            match = re.search(r'Art\.\s*([\d\w]+)', art_num_text, re.IGNORECASE)
-            if match:
-                art_num = match.group(1)
-            else:
-                art_num = art_num_text.replace("Art.", "").strip().rstrip(".")
+        art_num = extract_article_number_from_unit(unit)
+        if not art_num:
+            continue
 
         chapter_title = ""
         parent_chpt = unit.find_parent("div", class_=lambda c: c and "unit_chpt" in c)
@@ -162,22 +91,342 @@ def extract_articles_from_html(file_path: str) -> List[Dict[str, Any]]:
             if chpt_h3:
                 chapter_title = clean_html_text(chpt_h3.get_text())
 
-        raw_text = clean_html_text(unit.get_text(separator="\n"))
-        if not art_num:
-            match = re.search(r'Art\.\s*([\d\w]+)', raw_text[:50], re.IGNORECASE)
-            if match:
-                art_num = match.group(1)
-            else:
-                art_num = "N/A"
+        art_unit_id = build_unit_id(act_code, art_num)
+        art_node = LegalUnit(
+            act_code=act_code,
+            article=art_num,
+            unit_type="article",
+            unit_id=art_unit_id,
+            chapter=chapter_title,
+            act_title=act_title
+        )
 
-        # Uruchamiamy ustrukturyzowane parsowanie SOTA z Metadata Injection
-        dom_chunks = parse_unit_dom_sota(unit, act_code, act_title, chapter_title, art_num)
-        articles.extend(dom_chunks)
+        pass_units = unit.find_all("div", class_=lambda c: c and ("unit_pass" in c or "unit_para" in c))
 
-    unique_articles = {}
-    for art in articles:
-        key = (art["act_code"], art["article_number"])
-        if key not in unique_articles or len(art["content"]) > len(unique_articles[key]["content"]):
-            unique_articles[key] = art
+        if not pass_units:
+            remove_editorial_noise(unit)
+            art_text = clean_html_text(unit.get_text(separator="\n"))
+            art_node.text = art_text
+            articles.append(art_node)
+            continue
 
-    return list(unique_articles.values())
+        first_pass = pass_units[0]
+        intro_parts = []
+        for prev in first_pass.find_previous_siblings():
+            if prev.name in ['p', 'span', 'div'] and 'unit' not in prev.get('class', []):
+                t = clean_html_text(prev.get_text())
+                if t and not t.startswith("Art."):
+                    intro_parts.append(t)
+        art_node.parent_intro = " ".join(reversed(intro_parts))
+
+        for pass_div in pass_units:
+            pass_id = pass_div.get("id", "")
+            m_pass = re.search(r'(?:pass|para)_([\d\w]+)', pass_id)
+            pass_num = normalize_sub_unit(m_pass.group(1)) if m_pass else None
+
+            if not pass_num:
+                pass_h = pass_div.find(["h4", "h5", "span", "p"])
+                if pass_h:
+                    m = re.match(r'^(?:§\s*)?(\d+[a-z]?)\.', clean_html_text(pass_h.get_text()))
+                    if m:
+                        pass_num = normalize_sub_unit(m.group(1))
+
+            pass_unit_id = build_unit_id(act_code, art_num, paragraph=pass_num)
+            pass_node = LegalUnit(
+                act_code=act_code,
+                article=art_num,
+                paragraph=pass_num,
+                unit_type="paragraph",
+                unit_id=pass_unit_id,
+                parent_unit_id=art_unit_id,
+                parent_intro=art_node.parent_intro,
+                chapter=chapter_title,
+                act_title=act_title
+            )
+
+            pint_units = pass_div.find_all("div", class_=lambda c: c and "unit_pint" in c)
+
+            if not pint_units:
+                remove_editorial_noise(pass_div)
+                pass_node.text = clean_html_text(pass_div.get_text(separator="\n"))
+                art_node.children.append(pass_node)
+                continue
+
+            first_pint = pint_units[0]
+            pass_intro_parts = []
+            for prev in first_pint.find_previous_siblings():
+                t = clean_html_text(prev.get_text())
+                if t:
+                    pass_intro_parts.append(t)
+            pass_node.parent_intro = " ".join(reversed(pass_intro_parts))
+            pass_node.text = pass_node.parent_intro
+
+            for pint_div in pint_units:
+                pint_id = pint_div.get("id", "")
+                m_pint = re.search(r'pint_([\d\w]+)', pint_id)
+                pt_num = normalize_sub_unit(m_pint.group(1)) if m_pint else None
+                if not pt_num:
+                    pt_h = pint_div.find(["span", "p", "div"])
+                    if pt_h:
+                        m = re.match(r'^(\d+[a-z]?)\)', clean_html_text(pt_h.get_text()))
+                        if m:
+                            pt_num = normalize_sub_unit(m.group(1))
+
+                if not pt_num or "odno" in pint_id:
+                    continue
+
+                pint_unit_id = build_unit_id(act_code, art_num, paragraph=pass_num, point=pt_num)
+                pint_node = LegalUnit(
+                    act_code=act_code,
+                    article=art_num,
+                    paragraph=pass_num,
+                    point=pt_num,
+                    unit_type="point",
+                    unit_id=pint_unit_id,
+                    parent_unit_id=pass_unit_id,
+                    parent_intro=f"{art_node.parent_intro}\n{pass_node.parent_intro}".strip(),
+                    chapter=chapter_title,
+                    act_title=act_title
+                )
+
+                lett_units = pint_div.find_all("div", class_=lambda c: c and "unit_lett" in c)
+                if not lett_units:
+                    remove_editorial_noise(pint_div)
+                    pint_node.text = clean_html_text(pint_div.get_text(separator="\n"))
+                    pass_node.children.append(pint_node)
+                else:
+                    first_lett = lett_units[0]
+                    lett_intro_parts = []
+                    for prev in first_lett.find_previous_siblings():
+                        t = clean_html_text(prev.get_text())
+                        if t:
+                            lett_intro_parts.append(t)
+                    pint_node.text = " ".join(reversed(lett_intro_parts))
+
+                    for lett_div in lett_units:
+                        lett_id = lett_div.get("id", "")
+                        m_let = re.search(r'lett_([\d\w]+)', lett_id)
+                        let_token = normalize_sub_unit(m_let.group(1)) if m_let else None
+                        if not let_token or "odno" in lett_id:
+                            continue
+
+                        lett_unit_id = build_unit_id(act_code, art_num, paragraph=pass_num, point=pt_num, letter=let_token)
+                        remove_editorial_noise(lett_div)
+                        lett_text = clean_html_text(lett_div.get_text(separator="\n"))
+                        lett_node = LegalUnit(
+                            act_code=act_code,
+                            article=art_num,
+                            paragraph=pass_num,
+                            point=pt_num,
+                            letter=let_token,
+                            unit_type="letter",
+                            unit_id=lett_unit_id,
+                            parent_unit_id=pint_unit_id,
+                            parent_intro=f"{pint_node.parent_intro}\n{pint_node.text}".strip(),
+                            text=lett_text,
+                            chapter=chapter_title,
+                            act_title=act_title
+                        )
+                        pint_node.children.append(lett_node)
+
+                    pass_node.children.append(pint_node)
+
+            art_node.children.append(pass_node)
+
+        articles.append(art_node)
+
+    return articles
+
+
+def format_chunk_title(act_code: str, art_num: str, par: Optional[str] = None, pt: Optional[str] = None, let: Optional[str] = None) -> str:
+    """Formatuje czytelny tytuł jednostki prawnej."""
+    title = f"{act_code} Art. {art_num}"
+    if par:
+        title += f" ust. {par}"
+    if pt:
+        title += f" pkt {pt}"
+    if let:
+        title += f" lit. {let}"
+    return title
+
+
+def build_retrieval_chunks(tree: List[LegalUnit]) -> List[Dict[str, Any]]:
+    """
+    Poziom 2: Przekształca drzewo LegalUnit na płaską listę fragmentów do indeksu PostgreSQL / wektora.
+    Wstrzykuje metadane (Parent Context) do clean_text i content.
+    """
+    chunks = []
+
+    for art in tree:
+        act = art.act_code
+        art_num = art.article
+        act_title = art.act_title
+        chpt = art.chapter
+
+        if not art.children:
+            full_title = format_chunk_title(act, art_num)
+            clean_body = art.text.strip()
+            content = (
+                f"[AKTYWNE PRAWO]: {act_title}\n"
+                f"[ROZDZIAŁ]: {chpt if chpt else 'Główny'}\n"
+                f"[JEDNOSTKA]: {full_title}\n\n"
+                f"{clean_body}"
+            )
+            chunks.append({
+                "act_code": act,
+                "act_title": act_title,
+                "chapter": chpt,
+                "article_number": art_num,
+                "paragraph": None,
+                "point": None,
+                "letter": None,
+                "unit_id": art.unit_id,
+                "unit_type": "article",
+                "parent_unit_id": None,
+                "full_title": full_title,
+                "content": content,
+                "clean_text": content,
+                "year_effective": 2026,
+                "status": "OBOWIĄZUJĄCY"
+            })
+            continue
+
+        for par in art.children:
+            par_num = par.paragraph
+            par_title = format_chunk_title(act, art_num, par=par_num)
+
+            if not par.children:
+                clean_body = par.text.strip()
+                intro = f"Wprowadzenie do artykułu: {art.parent_intro}\n\n" if art.parent_intro else ""
+                content = (
+                    f"[AKTYWNE PRAWO]: {act_title}\n"
+                    f"[ROZDZIAŁ]: {chpt if chpt else 'Główny'}\n"
+                    f"[JEDNOSTKA]: {par_title}\n\n"
+                    f"{intro}{clean_body}"
+                )
+                chunks.append({
+                    "act_code": act,
+                    "act_title": act_title,
+                    "chapter": chpt,
+                    "article_number": art_num,
+                    "paragraph": par_num,
+                    "point": None,
+                    "letter": None,
+                    "unit_id": par.unit_id,
+                    "unit_type": "paragraph",
+                    "parent_unit_id": art.unit_id,
+                    "full_title": par_title,
+                    "content": content,
+                    "clean_text": content,
+                    "year_effective": 2026,
+                    "status": "OBOWIĄZUJĄCY"
+                })
+                continue
+
+            # Jeśli ustęp ma punkty:
+            # Tworzymy wpis ustępu TYLKO jeśli zawiera istotną treść ogólną/definicyjną (> 35 znaków)
+            if par.text and len(par.text.strip()) > 35:
+                content = (
+                    f"[AKTYWNE PRAWO]: {act_title}\n"
+                    f"[ROZDZIAŁ]: {chpt if chpt else 'Główny'}\n"
+                    f"[JEDNOSTKA]: {par_title}\n\n"
+                    f"Wprowadzenie: {par.text.strip()}"
+                )
+                chunks.append({
+                    "act_code": act,
+                    "act_title": act_title,
+                    "chapter": chpt,
+                    "article_number": art_num,
+                    "paragraph": par_num,
+                    "point": None,
+                    "letter": None,
+                    "unit_id": par.unit_id,
+                    "unit_type": "paragraph",
+                    "parent_unit_id": art.unit_id,
+                    "full_title": par_title,
+                    "content": content,
+                    "clean_text": content,
+                    "year_effective": 2026,
+                    "status": "OBOWIĄZUJĄCY"
+                })
+
+            for pt in par.children:
+                pt_num = pt.point
+                pt_title = format_chunk_title(act, art_num, par=par_num, pt=pt_num)
+
+                if not pt.children:
+                    parent_ctx = f"Kontekst nadrzędny:\n{pt.parent_intro}\n\n" if pt.parent_intro else ""
+                    content = (
+                        f"[AKTYWNE PRAWO]: {act_title}\n"
+                        f"[ROZDZIAŁ]: {chpt if chpt else 'Główny'}\n"
+                        f"[JEDNOSTKA]: {pt_title}\n\n"
+                        f"{parent_ctx}Treść przepisu:\n{pt.text.strip()}"
+                    )
+                    chunks.append({
+                        "act_code": act,
+                        "act_title": act_title,
+                        "chapter": chpt,
+                        "article_number": art_num,
+                        "paragraph": par_num,
+                        "point": pt_num,
+                        "letter": None,
+                        "unit_id": pt.unit_id,
+                        "unit_type": "point",
+                        "parent_unit_id": par.unit_id,
+                        "full_title": pt_title,
+                        "content": content,
+                        "clean_text": content,
+                        "year_effective": 2026,
+                        "status": "OBOWIĄZUJĄCY"
+                    })
+                else:
+                    for let in pt.children:
+                        let_tok = let.letter
+                        let_title = format_chunk_title(act, art_num, par=par_num, pt=pt_num, let=let_tok)
+                        parent_ctx = f"Kontekst nadrzędny:\n{let.parent_intro}\n\n" if let.parent_intro else ""
+                        content = (
+                            f"[AKTYWNE PRAWO]: {act_title}\n"
+                            f"[ROZDZIAŁ]: {chpt if chpt else 'Główny'}\n"
+                            f"[JEDNOSTKA]: {let_title}\n\n"
+                            f"{parent_ctx}Treść przepisu:\n{let.text.strip()}"
+                        )
+                        chunks.append({
+                            "act_code": act,
+                            "act_title": act_title,
+                            "chapter": chpt,
+                            "article_number": art_num,
+                            "paragraph": par_num,
+                            "point": pt_num,
+                            "letter": let_tok,
+                            "unit_id": let.unit_id,
+                            "unit_type": "letter",
+                            "parent_unit_id": pt.unit_id,
+                            "full_title": let_title,
+                            "content": content,
+                            "clean_text": content,
+                            "year_effective": 2026,
+                            "status": "OBOWIĄZUJĄCY"
+                        })
+
+    return chunks
+
+
+def extract_articles_from_html(file_path: str) -> List[Dict[str, Any]]:
+    """Główna funkcja wejściowa parsera: ładuje plik HTML, parsuje DOM i zwraca fragmenty."""
+    file_name = os.path.basename(file_path)
+    act_code, act_title = ACT_CODE_MAP.get(file_name, (os.path.splitext(file_name)[0].upper(), f"Ustawa ({file_name})"))
+
+    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+        html_content = f.read()
+
+    tree = extract_legal_tree(html_content, act_code, act_title)
+    chunks = build_retrieval_chunks(tree)
+
+    # Zapewnienie unikalności unit_id w ramach pojedynczego pliku aktu
+    unique_chunks = {}
+    for c in chunks:
+        uid = c["unit_id"]
+        if uid not in unique_chunks or len(c["content"]) > len(unique_chunks[uid]["content"]):
+            unique_chunks[uid] = c
+
+    return list(unique_chunks.values())

@@ -1,0 +1,987 @@
+[
+  {
+    "id": 101,
+    "category": "VAT - Obowiązek podatkowy",
+    "query": "Kiedy powstaje obowiązek podatkowy w podatku VAT na zasadach ogólnych z chwilą dokonania dostawy towarów lub wykonania usługi?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "19a"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "19a",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "dostawa towarów",
+      "wykonanie usługi",
+      "obowiązek podatkowy"
+    ]
+  },
+  {
+    "id": 102,
+    "category": "VAT - Zwolnienie podmiotowe",
+    "query": "Jaki jest limit wartości sprzedaży uprawniający podatnika do zwolnienia podmiotowego z VAT w danym roku podatkowym?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "113"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "113",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "200 000 zł",
+      "zwolnienie podmiotowe",
+      "wartość sprzedaży"
+    ]
+  },
+  {
+    "id": 103,
+    "category": "VAT - Faktury korygujące in minus",
+    "query": "W jakim okresie rozliczeniowym sprzedawca ma prawo obniżyć podstawę opodatkowania w przypadku wystawienia faktury korygującej in minus?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "29a"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "29a",
+            "paragraph": "13"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "korekta podstawy opodatkowania",
+      "uzgodnienie warunków",
+      "faktura korygująca"
+    ]
+  },
+  {
+    "id": 104,
+    "category": "VAT - Biała lista podatników",
+    "query": "Jakie dane zawiera wykaz podmiotów zarejestrowanych jako podatnicy VAT tzw. biała lista prowadzona przez Szefa KAS?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "96b"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "96b",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "Szef KAS",
+      "wykaz podatników",
+      "rachunek bankowy"
+    ]
+  },
+  {
+    "id": 105,
+    "category": "VAT - Import usług",
+    "query": "Kto jest uznawany za podatnika zobowiązanego do rozliczenia podatku w przypadku importu usług?",
+    "expected_act": [
+      "VAT"
+    ],
+    "expected_articles": [
+      "17"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "VAT",
+            "article": "17",
+            "paragraph": "1",
+            "point": "4"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "import usług",
+      "usługobiorca",
+      "podatnik"
+    ]
+  },
+  {
+    "id": 106,
+    "category": "CIT - Mały podatnik stawka 9%",
+    "query": "Jakie warunki przychodowe musi spełnić spółka z o.o., aby móc zastosować preferencyjną 9-procentową stawkę CIT?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "19"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "19",
+            "paragraph": "1",
+            "point": "2"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "9%",
+      "mały podatnik",
+      "2 000 000 euro"
+    ]
+  },
+  {
+    "id": 107,
+    "category": "CIT - Podatek u źródła WHT dywidendy",
+    "query": "Jaka jest stawka zryczałtowanego podatku dochodowego od wypłacanych dywidend dla nierezydentów w ustawie o CIT?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "22"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "22",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "19%",
+      "dywidendy",
+      "podatek u źródła"
+    ]
+  },
+  {
+    "id": 108,
+    "category": "CIT - Różnice kursowe",
+    "query": "Kiedy powstają dodatnie różnice kursowe dla celów podatku dochodowego od osób prawnych?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "15a"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "15a",
+            "paragraph": "2"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "dodatnie różnice kursowe",
+      "przychody",
+      "kurs waluty"
+    ]
+  },
+  {
+    "id": 109,
+    "category": "CIT - Estoński CIT wejście",
+    "query": "Jakie warunki dotyczące struktury zatrudnienia i wspólników musi spełnić spółka, aby wybrać ryczałt od dochodów spółek estoński CIT?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "28j"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "28j",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "ryczałt od dochodów spółek",
+      "osoby fizyczne",
+      "zatrudnienie"
+    ]
+  },
+  {
+    "id": 110,
+    "category": "CIT - Koszty finansowania dłużnego",
+    "query": "Jaki jest ustawowy limit zaliczenia kosztów finansowania dłużnego do kosztów uzyskania przychodów w CIT?",
+    "expected_act": [
+      "CIT"
+    ],
+    "expected_articles": [
+      "15c"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "CIT",
+            "article": "15c",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "koszty finansowania dłużnego",
+      "EBITDA",
+      "nadwyżka kosztów"
+    ]
+  },
+  {
+    "id": 111,
+    "category": "PIT - Podatek liniowy 19%",
+    "query": "Jaka jest stawka podatku liniowego dla dochodów z pozarolniczej działalności gospodarczej w PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "30c"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "30c",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "19%",
+      "podatek liniowy",
+      "działalność gospodarcza"
+    ]
+  },
+  {
+    "id": 112,
+    "category": "PIT - Ulga dla młodych",
+    "query": "Do jakiego wieku i do jakiego limitu przychodów przysługuje zwolnienie od podatku PIT dla osób młodych tzw. zerowy PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "21"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "21",
+            "paragraph": "1",
+            "point": "148"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "26 roku życia",
+      "85 528 zł",
+      "ulga dla młodych"
+    ]
+  },
+  {
+    "id": 113,
+    "category": "PIT - Ulga termomodernizacyjna",
+    "query": "Jaki jest maksymalny limit odliczenia w ramach ulgi termomodernizacyjnej w podatku dochodowym od osób fizycznych?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "26h"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "26h",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "53 000 zł",
+      "termomodernizacja",
+      "budynek mieszkalny"
+    ]
+  },
+  {
+    "id": 114,
+    "category": "PIT - Zbycie nieruchomości",
+    "query": "Po ilu latach od końca roku nabycia odpłatne zbycie nieruchomości mieszkalnej przez osobę fizyczną nie stanowi źródła przychodu w PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "10"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "10",
+            "paragraph": "1",
+            "point": "8"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "5 lat",
+      "odpłatne zbycie",
+      "nieruchomości"
+    ]
+  },
+  {
+    "id": 115,
+    "category": "PIT - Ulga na dziecko",
+    "query": "Na jakich zasadach rodzice mogą odliczyć kwotę ulgi prorodzinnej na pierwsze i kolejne dzieci od podatku PIT?",
+    "expected_act": [
+      "PIT"
+    ],
+    "expected_articles": [
+      "27f"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PIT",
+            "article": "27f",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "ulga na dzieci",
+      "odliczenie od podatku",
+      "władza rodzicielska"
+    ]
+  },
+  {
+    "id": 116,
+    "category": "Ordynacja - Przedawnienie",
+    "query": "Po jakim okresie zobowiązanie podatkowe ulega przedawnieniu licząc od końca roku kalendarzowego, w którym upłynął termin płatności podatku?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "70"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "70",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "5 lat",
+      "przedawnienie",
+      "zobowiązanie podatkowe"
+    ]
+  },
+  {
+    "id": 117,
+    "category": "Ordynacja - Odsetki za zwłokę",
+    "query": "Od kiedy nalicza się odsetki za zwłokę od zaległości podatkowych w Ordynacji podatkowej?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "53"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "53",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zaległość podatkowa",
+      "odsetki za zwłokę",
+      "dzień następujący"
+    ]
+  },
+  {
+    "id": 118,
+    "category": "Ordynacja - Odwołanie od decyzji",
+    "query": "W jakim terminie wnosi się odwołanie od decyzji organu podatkowego pierwszej instancji?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "223"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "223",
+            "paragraph": "2"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "14 dni",
+      "odwołanie",
+      "doręczenie decyzji"
+    ]
+  },
+  {
+    "id": 119,
+    "category": "Ordynacja - Interpretacje indywidualne",
+    "query": "Kto i w jakim trybie może wystąpić z wnioskiem o wydanie interpretacji indywidualnej przepisów prawa podatkowego?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "14b"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "14b",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "interpretacja indywidualna",
+      "zainteresowany",
+      "stan faktyczny"
+    ]
+  },
+  {
+    "id": 120,
+    "category": "Ordynacja - Odpowiedzialność członków zarządu",
+    "query": "Na jakich zasadach członkowie zarządu spółki z o.o. odpowiadają solidarnie całym swoim majątkiem za zaległości podatkowe spółki?",
+    "expected_act": [
+      "OP"
+    ],
+    "expected_articles": [
+      "116"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "OP",
+            "article": "116",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "członkowie zarządu",
+      "odpowiedzialność solidarna",
+      "bezskuteczność egzekucji"
+    ]
+  },
+  {
+    "id": 121,
+    "category": "UoR - Inwentaryzacja terminy",
+    "query": "W jakim terminie jednostki mają obowiązek przeprowadzić inwentaryzację składników aktywów i pasywów na dzień bilansowy?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "26"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "26",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "inwentaryzacja",
+      "dzień bilansowy",
+      "spis z natury"
+    ]
+  },
+  {
+    "id": 122,
+    "category": "UoR - Zasada memoriału",
+    "query": "Na czym polega zasada memoriału i zasada współmierności przychodów i kosztów w księgach rachunkowych?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "6"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "6",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zasada memoriału",
+      "rok obrotowy",
+      "współmierność"
+    ]
+  },
+  {
+    "id": 123,
+    "category": "UoR - Składniki sprawozdania finansowego",
+    "query": "Z jakich podstawowych elementów składa się roczne sprawozdanie finansowe jednostki?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "45"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "45",
+            "paragraph": "2"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "bilans",
+      "rachunek zysków i strat",
+      "informacja dodatkowa"
+    ]
+  },
+  {
+    "id": 124,
+    "category": "UoR - Badanie sprawozdania finansowego",
+    "query": "Kiedy sprawozdanie finansowe podlega obowiązkowemu badaniu przez biegłego rewidenta?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "64"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "64",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "biegły rewident",
+      "badanie sprawozdania",
+      "kontynuujące działalność"
+    ]
+  },
+  {
+    "id": 125,
+    "category": "UoR - Zasada ostrożności",
+    "query": "Na czym polega zasada ostrożnej wyceny poszczególnych składników aktywów i pasywów w Ustawie o Rachunkowości?",
+    "expected_act": [
+      "UOR"
+    ],
+    "expected_articles": [
+      "7"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "UOR",
+            "article": "7",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zasada ostrożności",
+      "wycena",
+      "utrata wartości"
+    ]
+  },
+  {
+    "id": 126,
+    "category": "ZUS - Preferencyjny ZUS",
+    "query": "Przez jaki okres i w jakiej wysokości osoby rozpoczynające działalność gospodarczą mogą opłacać preferencyjne składki na ubezpieczenia społeczne?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "18a"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "18a",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "24 miesiące",
+      "30% minimalnego wynagrodzenia",
+      "preferencyjne składki"
+    ]
+  },
+  {
+    "id": 127,
+    "category": "ZUS - Mały ZUS Plus",
+    "query": "Jaki jest limit przychodów z poprzedniego roku uprawniający przedsiębiorcę do skorzystania z Małego ZUS Plus?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "18c"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "18c",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "120 000 zł",
+      "Mały ZUS Plus",
+      "przychód z działalności"
+    ]
+  },
+  {
+    "id": 128,
+    "category": "ZUS - Termin deklaracji i opłat",
+    "query": "Do którego dnia miesiąca osoby opłacające składki wyłącznie za siebie mają obowiązek złożyć deklarację ZUS DRA i opłacić składki?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "47"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "47",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "20 dnia",
+      "ZUS DRA",
+      "opłacenie składek"
+    ]
+  },
+  {
+    "id": 129,
+    "category": "ZUS - Obowiązek zgłoszenia",
+    "query": "W jakim terminie płatnik składek jest zobowiązany zgłosić osobę podlegającą ubezpieczeniom społecznym do ZUS?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "36"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "36",
+            "paragraph": "4"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "7 dni",
+      "zgłoszenie do ubezpieczeń",
+      "płatnik składek"
+    ]
+  },
+  {
+    "id": 130,
+    "category": "ZUS - Zbieg tytułów ubezpieczeń",
+    "query": "Jak rozstrzyga się zbieg tytułów ubezpieczeń w przypadku osoby zatrudnionej na umowę o pracę z wynagrodzeniem co najmniej minimalnym i prowadzącej działalność?",
+    "expected_act": [
+      "ZUS"
+    ],
+    "expected_articles": [
+      "9"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "ZUS",
+            "article": "9",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zbieg tytułów",
+      "minimalne wynagrodzenie",
+      "dobrowolne ubezpieczenie"
+    ]
+  },
+  {
+    "id": 131,
+    "category": "PP - Domniemanie uczciwości",
+    "query": "Na czym polega zasada domniemania uczciwości przedsiębiorcy w relacjach z organami administracji publicznej?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "10"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "10",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "domniemanie uczciwości",
+      "organ administracji",
+      "działanie w dobrej wierze"
+    ]
+  },
+  {
+    "id": 132,
+    "category": "PP - Zawieszenie działalności",
+    "query": "Na jaki okres przedsiębiorca niezatrudniający pracowników może zawiesić wykonywanie działalności gospodarczej?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "22"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "22",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zawieszenie wykonywania działalności",
+      "czas nieokreślony",
+      "niezatrudniający pracowników"
+    ]
+  },
+  {
+    "id": 133,
+    "category": "PP - Zawiadomienie o kontroli",
+    "query": "Z jakim wyprzedzeniem organ kontroli ma obowiązek zawiadomić przedsiębiorcę o zamiarze wszczęcia kontroli gospodarczej?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "48"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "48",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "zawiadomienie",
+      "wszczęcie kontroli",
+      "nie wcześniej niż po upływie 7 dni"
+    ]
+  },
+  {
+    "id": 134,
+    "category": "PP - Czas trwania kontroli u mikroprzedsiębiorcy",
+    "query": "Ile wynosi maksymalny łączny czas trwania wszystkich kontroli organu u mikroprzedsiębiorcy w jednym roku kalendarzowym?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "55"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "55",
+            "paragraph": "1",
+            "point": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "12 dni roboczych",
+      "mikroprzedsiębiorca",
+      "czas trwania kontroli"
+    ]
+  },
+  {
+    "id": 135,
+    "category": "PP - Ulga na start",
+    "query": "Kto i na jakich warunkach może skorzystać ze zwolnienia z obowiązku ubezpieczeń społecznych przez pierwsze 6 miesięcy działalności tzw. ulgi na start?",
+    "expected_act": [
+      "PP"
+    ],
+    "expected_articles": [
+      "18"
+    ],
+    "expected_citation_groups": [
+      {
+        "mode": "all",
+        "citations": [
+          {
+            "act": "PP",
+            "article": "18",
+            "paragraph": "1"
+          }
+        ]
+      }
+    ],
+    "ground_truth_claims": [
+      "ulga na start",
+      "6 miesięcy",
+      "nie podlega obowiązkowym ubezpieczeniom"
+    ]
+  }
+]

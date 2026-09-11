@@ -1,0 +1,787 @@
+{
+  "benchmark_type": "clean_retrieval_baseline",
+  "timestamp": "2026-09-10 17:42:50",
+  "elapsed_seconds": 223.53,
+  "total_questions": 15,
+  "metrics": {
+    "hit_rate_at_1": 0.5333,
+    "hit_rate_at_3": 0.6,
+    "hit_rate_at_5": 0.6,
+    "mrr": 0.5556,
+    "hit_rate_at_1_exact": 0.3333,
+    "hit_rate_at_3_exact": 0.3333,
+    "hit_rate_at_5_exact": 0.3333,
+    "mrr_exact": 0.3333,
+    "complete_answer_rate": 0.6,
+    "macro_citation_recall": 0.6
+  },
+  "metrics_by_act": {
+    "CIT": {
+      "count": 3,
+      "hit_rate_at_5": 1.0,
+      "mrr": 1.0
+    },
+    "PIT": {
+      "count": 7,
+      "hit_rate_at_5": 0.7143,
+      "mrr": 0.7143
+    },
+    "VAT": {
+      "count": 5,
+      "hit_rate_at_5": 0.4,
+      "mrr": 0.4
+    },
+    "UOR": {
+      "count": 2,
+      "hit_rate_at_5": 0.5,
+      "mrr": 0.5
+    },
+    "OP": {
+      "count": 1,
+      "hit_rate_at_5": 0.0,
+      "mrr": 0.0
+    },
+    "ZUS": {
+      "count": 1,
+      "hit_rate_at_5": 1.0,
+      "mrr": 0.3333
+    },
+    "PP": {
+      "count": 1,
+      "hit_rate_at_5": 0.0,
+      "mrr": 0.0
+    }
+  },
+  "detailed_results": [
+    {
+      "id": 1,
+      "query": "Jaki jest limit wartości początkowej samochodów osobowych spalinowych dla odpisów amortyzacyjnych zaliczanych do KUP?",
+      "expected_act": [
+        "PIT",
+        "CIT"
+      ],
+      "expected_articles": [
+        "23",
+        "16"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "CIT Art. 16 ust. 1 pkt 4",
+      "retrieved_docs": [
+        {
+          "act_code": "CIT",
+          "article_number": "16 ust. 1 pkt 4",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "23 ust. 1 pkt 4",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "23 ust. 1 pkt 54",
+          "rerank_score": 0.7308
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "16k ust. 1 pkt 2",
+          "rerank_score": 0.7307
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "16k ust. 1 pkt 3",
+          "rerank_score": 0.7307
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "query": "Ile wynosi odliczenie podatku naliczonego VAT od wydatków eksploatacyjnych i paliwa dla samochodu osobowego używanego w trybie mieszanym?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "86a"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "VAT Art. 86a ust. 1 pkt 4",
+      "retrieved_docs": [
+        {
+          "act_code": "VAT",
+          "article_number": "86a ust. 1 pkt 4",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "VAT",
+          "article_number": "86a ust. 1 pkt 5",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "VAT",
+          "article_number": "86a ust. 1 pkt 1",
+          "rerank_score": 0.7309
+        },
+        {
+          "act_code": "VAT",
+          "article_number": "86a ust. 1 pkt 3",
+          "rerank_score": 0.7309
+        },
+        {
+          "act_code": "VAT",
+          "article_number": "86a ust. 1 pkt 2",
+          "rerank_score": 0.7309
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "query": "W jakich sytuacjach i dla jakich transakcji powyżej 15 tys. zł brutto występuje obowiązek stosowania Mechanizmu Podzielonej Płatności?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "108a"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "top_doc": "CIT Art. 15d",
+      "retrieved_docs": [
+        {
+          "act_code": "CIT",
+          "article_number": "15d",
+          "rerank_score": 0.7211
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "15",
+          "rerank_score": 0.505
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "60",
+          "rerank_score": 0.5041
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "15c ust. 1 pkt 15",
+          "rerank_score": 0.5032
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "15ba",
+          "rerank_score": 0.5027
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "query": "Przy jakim limicie przychodów netto ze sprzedaży powstaje obowiązek prowadzenia pełnych ksiąg rachunkowych wg Ustawy o Rachunkowości?",
+      "expected_act": [
+        "UOR",
+        "PIT"
+      ],
+      "expected_articles": [
+        "2",
+        "24a"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "top_doc": "ORDYNACJA Art. 90",
+      "retrieved_docs": [
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "90",
+          "rerank_score": 0.7038
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "89",
+          "rerank_score": 0.6997
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "3",
+          "rerank_score": 0.5928
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "61",
+          "rerank_score": 0.5789
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "87",
+          "rerank_score": 0.5781
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "query": "Do którego dnia miesiąca podatnik PIT prowadzący działalność ma obowiązek wpłacać miesięczną zaliczkę na podatek dochodowy?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "44"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "PIT Art. 44 ust. 1 pkt 1",
+      "retrieved_docs": [
+        {
+          "act_code": "PIT",
+          "article_number": "44 ust. 1 pkt 1",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "42 ust. 1 pkt 1",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "42 ust. 1 pkt 2",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "41 ust. 1 pkt 1",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "42g",
+          "rerank_score": 0.7309
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "query": "Jaka jest ogólna definicja kosztów uzyskania przychodów i jakie wymogi musi spełniać wydatek, aby stanowić KUP?",
+      "expected_act": [
+        "PIT",
+        "CIT"
+      ],
+      "expected_articles": [
+        "22",
+        "15"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "PIT Art. 22 ust. 1 pkt 49",
+      "retrieved_docs": [
+        {
+          "act_code": "PIT",
+          "article_number": "22 ust. 1 pkt 49",
+          "rerank_score": 0.7309
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "22 ust. 1 pkt 4",
+          "rerank_score": 0.7309
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "22 ust. 1 pkt 46",
+          "rerank_score": 0.7309
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "15 ust. 1 pkt 29",
+          "rerank_score": 0.7309
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "15 ust. 1 pkt 5",
+          "rerank_score": 0.7309
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "query": "Na czym polega ulga podatkowa na działalność badawczo-rozwojową B+R i jakie koszty kwalifikowane można dodatkowo odliczyć?",
+      "expected_act": [
+        "PIT",
+        "CIT"
+      ],
+      "expected_articles": [
+        "26e",
+        "18d"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "CIT Art. 18d ust. 1 pkt 4",
+      "retrieved_docs": [
+        {
+          "act_code": "CIT",
+          "article_number": "18d ust. 1 pkt 4",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "18d ust. 1 pkt 2a",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "18d ust. 1 pkt 4a",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "26e ust. 1 pkt 4",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "18d ust. 1 pkt 3",
+          "rerank_score": 0.731
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "query": "Jakie są stawki podatkowe w skali podatkowej PIT oraz kwota zmniejszająca podatek w pierwszym progu podatkowym?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "27"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "PIT Art. 27",
+      "retrieved_docs": [
+        {
+          "act_code": "PIT",
+          "article_number": "27",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "44 ust. 1 pkt 2",
+          "rerank_score": 0.7298
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "30a ust. 1 pkt 87",
+          "rerank_score": 0.7195
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "30a ust. 1 pkt 2",
+          "rerank_score": 0.7178
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "30a ust. 1 pkt 92",
+          "rerank_score": 0.7162
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "query": "Kiedy i w jakiej formie organ podatkowy może żądać przekazania ksiąg podatkowych w postaci Jednolitego Pliku Kontrolnego JPK?",
+      "expected_act": [
+        "ORDYNACJA",
+        "VAT"
+      ],
+      "expected_articles": [
+        "193a",
+        "99"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "top_doc": "ORDYNACJA Art. 183",
+      "retrieved_docs": [
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "183",
+          "rerank_score": 0.7304
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "82",
+          "rerank_score": 0.7293
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "184",
+          "rerank_score": 0.7267
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "275",
+          "rerank_score": 0.725
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "284",
+          "rerank_score": 0.7242
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "query": "Na czym polega nadrzędna zasada rzetelnego i jasnego obrazu sytuacji majątkowej i finansowej w Ustawie o Rachunkowości?",
+      "expected_act": [
+        "UOR"
+      ],
+      "expected_articles": [
+        "4"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "UOR Art. 4",
+      "retrieved_docs": [
+        {
+          "act_code": "UOR",
+          "article_number": "4",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "UOR",
+          "article_number": "5",
+          "rerank_score": 0.7261
+        },
+        {
+          "act_code": "UOR",
+          "article_number": "7",
+          "rerank_score": 0.7235
+        },
+        {
+          "act_code": "UOR",
+          "article_number": "46",
+          "rerank_score": 0.7228
+        },
+        {
+          "act_code": "UOR",
+          "article_number": "28 ust. 1 pkt 9",
+          "rerank_score": 0.7208
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "query": "W jakich przypadkach podatnicy świadczący usługi lub sprzedający towary na rzecz osób fizycznych mają obowiązek stosowania kasy rejestrującej?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "111"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "top_doc": "PIT Art. 14 ust. 1 pkt 3",
+      "retrieved_docs": [
+        {
+          "act_code": "PIT",
+          "article_number": "14 ust. 1 pkt 3",
+          "rerank_score": 0.6353
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "14 ust. 1 pkt 13",
+          "rerank_score": 0.6223
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "14 ust. 1 pkt 10",
+          "rerank_score": 0.605
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "14 ust. 1 pkt 19",
+          "rerank_score": 0.5978
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "14 ust. 1 pkt 3a",
+          "rerank_score": 0.5936
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "query": "Co zdaniem ustawy o PIT stanowi przychód z pozarolniczej działalności gospodarczej?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "14"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "top_doc": "PIT Art. 5b",
+      "retrieved_docs": [
+        {
+          "act_code": "PIT",
+          "article_number": "5b",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "5a ust. 1 pkt 6",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "8",
+          "rerank_score": 0.7309
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "24 ust. 1 pkt 5",
+          "rerank_score": 0.7306
+        },
+        {
+          "act_code": "PIT",
+          "article_number": "24 ust. 1 pkt 11",
+          "rerank_score": 0.7306
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "query": "Kto podlega obowiązkowo ubezpieczeniom emerytalnemu i rentowym z tytułu prowadzenia pozarolniczej działalności wg Ustawy o ZUS?",
+      "expected_act": [
+        "ZUS"
+      ],
+      "expected_articles": [
+        "6"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 0.3333,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "ZUS Art. 6a",
+      "retrieved_docs": [
+        {
+          "act_code": "ZUS",
+          "article_number": "6a",
+          "rerank_score": 0.7311
+        },
+        {
+          "act_code": "ZUS",
+          "article_number": "13 ust. 1 pkt 4",
+          "rerank_score": 0.7311
+        },
+        {
+          "act_code": "ZUS",
+          "article_number": "6 ust. 1 pkt 4",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "ZUS",
+          "article_number": "13 ust. 1 pkt 5",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "ZUS",
+          "article_number": "6 ust. 1 pkt 11",
+          "rerank_score": 0.731
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "query": "Jakie warunki przychodowe należy spełnić, aby prowadzić działalność nierejestrowaną zgodnie z Prawem Przedsiębiorców?",
+      "expected_act": [
+        "PP"
+      ],
+      "expected_articles": [
+        "5"
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "top_doc": "ORDYNACJA Art. 41",
+      "retrieved_docs": [
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "41",
+          "rerank_score": 0.5086
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "24f ust. 1 pkt 1",
+          "rerank_score": 0.5008
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "24f ust. 1 pkt 3",
+          "rerank_score": 0.5006
+        },
+        {
+          "act_code": "ORDYNACJA",
+          "article_number": "39",
+          "rerank_score": 0.5006
+        },
+        {
+          "act_code": "CIT",
+          "article_number": "24f ust. 1 pkt 2",
+          "rerank_score": 0.5005
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "query": "Czym jest Wiążąca Informacja Stawkowa (WIS) i jaki organ ją wydaje dla potrzeb podatku VAT?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "42a"
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "top_doc": "VAT Art. 42a",
+      "retrieved_docs": [
+        {
+          "act_code": "VAT",
+          "article_number": "42a",
+          "rerank_score": 0.7311
+        },
+        {
+          "act_code": "VAT",
+          "article_number": "42i",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "VAT",
+          "article_number": "42g",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "VAT",
+          "article_number": "42c",
+          "rerank_score": 0.731
+        },
+        {
+          "act_code": "VAT",
+          "article_number": "42e",
+          "rerank_score": 0.731
+        }
+      ]
+    }
+  ]
+}

@@ -178,6 +178,18 @@ class LegalCitation:
         art_num = doc.get("article_number") or doc.get("article")
         if not act or not art_num:
             return None
+
+        paragraph = doc.get("paragraph")
+        point = doc.get("point")
+        if paragraph is not None or point is not None:
+            return cls(act=str(act), article=str(art_num), paragraph=paragraph, point=point)
+
+        full_title = doc.get("full_title", "")
+        if full_title:
+            cit = cls.from_text(full_title, default_act=str(act))
+            if cit:
+                return cit
+
         return cls.from_text(f"{act} {art_num}", default_act=str(act))
 
 
@@ -724,10 +736,47 @@ def evaluate_faithfulness(answer_text: str, context_text: str, ground_truth_clai
 # 5. GŁÓWNA PĘTLA EWALUACJI BENCHMARKU
 # =====================================================================
 
-def run_rag_evaluation(output_json_path: str = "eval_results.json") -> Dict[str, Any]:
-    print("=" * 105)
-    print(" 🧪 URUCHAMIANIE MODUŁU EWALUACJI RAG (BENCHMARK 15 PYTAŃ PODATKOWYCH)")
-    print("=" * 105)
+def load_benchmark_dataset(dataset_path: Optional[str] = None) -> List[Dict[str, Any]]:
+    """Ładuje pytania testowe z pliku JSON lub domyślnego TEST_DATASET."""
+    if not dataset_path:
+        return TEST_DATASET
+    if not os.path.exists(dataset_path):
+        raise FileNotFoundError(f"Nie odnaleziono pliku ze zbiorem danych: {dataset_path}")
+    with open(dataset_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    parsed = []
+    for item in data:
+        groups = []
+        for g in item.get("expected_citation_groups", []):
+            mode = g.get("mode", "all")
+            cits = []
+            for c in g.get("citations", []):
+                if isinstance(c, dict):
+                    cits.append(LegalCitation(
+                        act=c.get("act", ""),
+                        article=c.get("article", ""),
+                        paragraph=c.get("paragraph"),
+                        point=c.get("point")
+                    ))
+                elif isinstance(c, LegalCitation):
+                    cits.append(c)
+            groups.append(CitationGroup(mode=mode, citations=cits))
+        item_copy = dict(item)
+        item_copy["expected_citation_groups"] = groups
+        parsed.append(item_copy)
+    return parsed
+
+
+def run_rag_evaluation(
+    mode: str = "retrieval",
+    dataset_path: Optional[str] = None,
+    output_json_path: str = "eval_results.json",
+    routing: str = "none"
+) -> Dict[str, Any]:
+    dataset = load_benchmark_dataset(dataset_path)
+    print("=" * 108)
+    print(f" 🧪 URUCHAMIANIE EWALUACJI RAG | TRYB: {mode.upper()} | ZBIÓR: {dataset_path or 'Wbudowany'} ({len(dataset)} pytań)")
+    print("=" * 108)
 
     start_time = time.time()
     results = []
@@ -753,61 +802,72 @@ def run_rag_evaluation(output_json_path: str = "eval_results.json") -> Dict[str,
     print(f"{'ID':<3} | {'Kategoria / Temat':<24} | {'Ustawa':<9} | {'H@1':<5} | {'H@3':<5} | {'H@3(ex)':<7} | {'MRR':<6} | {'Compl':<5} | {'Faith':<10} | {'Status'}")
     print("-" * 108)
 
-    for item in TEST_DATASET:
+    for item in dataset:
         item_id = item["id"]
         query = item["query"]
         expected_act = item["expected_act"] if isinstance(item["expected_act"], list) else [item["expected_act"]]
         expected_arts = item["expected_articles"]
         groups: List[CitationGroup] = item.get("expected_citation_groups", [])
-        claims = item["ground_truth_claims"]
+        claims = item.get("ground_truth_claims", [])
 
-        # Wywołanie potoku RAG Pipeline (z mockiem na wypadek braku lokalnego llama.cpp)
-        try:
-            rag_output = run_rag_pipeline(user_query=query)
-        except Exception as e:
-            if "Gemma SLM Recognizer" in str(e) or "NewConnectionError" in str(e) or "ConnectionRefusedError" in str(e):
-                from unittest.mock import patch, MagicMock
-                with patch("requests.post") as mock_p:
-                    mock_resp = MagicMock()
-                    mock_resp.status_code = 200
-                    mock_resp.json.return_value = {"choices": [{"message": {"content": "[]"}}]}
-                    mock_p.return_value = mock_resp
-                    rag_output = run_rag_pipeline(user_query=query)
+        if mode == "retrieval":
+            # Czysty benchmark retrievalu bez narzutu promptów, anonymizera i LLM
+            enable_act_bias = (routing == "boost")
+            cited_docs = retrieve_and_rerank(query=query, top_k=5, score_threshold=0.0, enable_act_bias=enable_act_bias)
+            answer_text = ""
+            prompt_context = ""
+            gen_status = "not_run"
+            faith_score = None
+            grounding_score = 0.0
+            lexical_score = 0.0
+            faith_disp = "retrieval"
+        else:
+            # Pełny benchmark end-to-end potoku aplikacji
+            try:
+                rag_output = run_rag_pipeline(user_query=query)
+            except Exception as e:
+                if "Gemma SLM Recognizer" in str(e) or "NewConnectionError" in str(e) or "ConnectionRefusedError" in str(e):
+                    from unittest.mock import patch, MagicMock
+                    with patch("requests.post") as mock_p:
+                        mock_resp = MagicMock()
+                        mock_resp.status_code = 200
+                        mock_resp.json.return_value = {"choices": [{"message": {"content": "[]"}}]}
+                        mock_p.return_value = mock_resp
+                        rag_output = run_rag_pipeline(user_query=query)
+                else:
+                    raise
+
+            cited_docs = rag_output.get("cited_articles", [])
+            answer_text = rag_output.get("answer_text", "")
+            prompt_context = rag_output.get("prompt_to_copy", "")
+
+            if not cited_docs:
+                raw_docs = retrieve_and_rerank(query=query, top_k=5, score_threshold=0.0)
+                cited_docs = raw_docs
+
+            gen_status = rag_output.get("generation_status")
+            if not gen_status:
+                if not answer_text or "Tryb testowy (bez API Gemini)" in answer_text:
+                    gen_status = "not_run"
+                elif "BŁĄD" in answer_text.upper() and len(answer_text) < 120:
+                    gen_status = "failed"
+                else:
+                    gen_status = "completed"
+
+            grounding_score = evaluate_claim_grounding(answer_text, prompt_context, claims)
+            lexical_score = evaluate_lexical_similarity_heuristic(answer_text, claims)
+
+            if gen_status == "not_run":
+                faith_score = None
+                faith_disp = "not_run"
             else:
-                raise
-
-        cited_docs = rag_output.get("cited_articles", [])
-        answer_text = rag_output.get("answer_text", "")
-        prompt_context = rag_output.get("prompt_to_copy", "")
-
-        if not cited_docs:
-            raw_docs = retrieve_and_rerank(query=query, top_k=5, score_threshold=0.0)
-            cited_docs = raw_docs
+                faith_score = evaluate_faithfulness(answer_text, prompt_context, claims)
+                sum_faithfulness += faith_score
+                sum_grounding += grounding_score
+                gen_evaluated_count += 1
+                faith_disp = f"{faith_score:.2f}"
 
         retrieval_metrics = evaluate_retrieval_metrics(cited_docs, groups=groups)
-
-        # Status generacji odpowiedzi: not_run | completed | failed | partial | skipped
-        gen_status = rag_output.get("generation_status")
-        if not gen_status:
-            if not answer_text or "Tryb testowy (bez API Gemini)" in answer_text:
-                gen_status = "not_run"
-            elif "BŁĄD" in answer_text.upper() and len(answer_text) < 120:
-                gen_status = "failed"
-            else:
-                gen_status = "completed"
-
-        grounding_score = evaluate_claim_grounding(answer_text, prompt_context, claims)
-        lexical_score = evaluate_lexical_similarity_heuristic(answer_text, claims)
-
-        if gen_status == "not_run":
-            faith_score = None
-            faith_disp = "not_run"
-        else:
-            faith_score = evaluate_faithfulness(answer_text, prompt_context, claims)
-            sum_faithfulness += faith_score
-            sum_grounding += grounding_score
-            gen_evaluated_count += 1
-            faith_disp = f"{faith_score:.2f}"
 
         h1 = retrieval_metrics["hit_rate_1"]
         h3 = retrieval_metrics["hit_rate_3"]
@@ -835,7 +895,6 @@ def run_rag_evaluation(output_json_path: str = "eval_results.json") -> Dict[str,
         sum_complete_answer += compl
         sum_macro_recall += recall
 
-        # Zbieranie metryk per akt prawny
         question_acts = set(c.act for g in groups for c in g.citations)
         for act in question_acts:
             if act not in act_data:
@@ -883,7 +942,7 @@ def run_rag_evaluation(output_json_path: str = "eval_results.json") -> Dict[str,
             "top_rerank_score": cited_docs[0].get("rerank_score") if cited_docs else 0.0
         })
 
-    total_q = len(TEST_DATASET)
+    total_q = len(dataset)
     avg_hit_1 = round(total_hit_1 / total_q, 4)
     avg_hit_3 = round(total_hit_3 / total_q, 4)
     avg_hit_5 = round(total_hit_5 / total_q, 4)
@@ -900,7 +959,6 @@ def run_rag_evaluation(output_json_path: str = "eval_results.json") -> Dict[str,
     avg_grounding = round(sum_grounding / gen_evaluated_count, 4) if gen_evaluated_count > 0 else None
     elapsed_sec = round(time.time() - start_time, 2)
 
-    # Obliczenie metryk per akt prawny
     metrics_by_act = {}
     for act, q_list in sorted(act_data.items()):
         act_cnt = len(q_list)
@@ -918,6 +976,9 @@ def run_rag_evaluation(output_json_path: str = "eval_results.json") -> Dict[str,
 
     summary = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "evaluation_mode": mode,
+        "routing_mode": routing,
+        "dataset_source": dataset_path or "TEST_DATASET",
         "total_questions": total_q,
         "elapsed_seconds": elapsed_sec,
         "metrics": {
@@ -944,7 +1005,7 @@ def run_rag_evaluation(output_json_path: str = "eval_results.json") -> Dict[str,
     }
 
     print("-" * 108)
-    print(" 📊 ZBIORCZE PODSUMOWANIE METRYK RAG:")
+    print(f" 📊 ZBIORCZE PODSUMOWANIE METRYK RAG (ROUTING: {routing.upper()}):")
     print(f"  • Hit Rate@1 (Artykuł):   {avg_hit_1 * 100:.1f}%")
     print(f"  • Hit Rate@3 (Artykuł):   {avg_hit_3 * 100:.1f}%")
     print(f"  • Hit Rate@5 (Artykuł):   {avg_hit_5 * 100:.1f}%")
@@ -974,4 +1035,17 @@ def run_rag_evaluation(output_json_path: str = "eval_results.json") -> Dict[str,
 
 
 if __name__ == "__main__":
-    run_rag_evaluation()
+    import argparse
+    parser = argparse.ArgumentParser(description="Ewaluacja systemu RAG (Polskie Prawo Podatkowe)")
+    parser.add_argument("--mode", choices=["retrieval", "pipeline"], default="retrieval", help="Tryb ewaluacji: 'retrieval' lub 'pipeline'")
+    parser.add_argument("--routing", choices=["none", "boost"], default="none", help="Tryb routingu ustaw: 'none' (domyślny) lub 'boost' (eksperymentalny)")
+    parser.add_argument("--dataset", type=str, default="dataset/legacy_regression_15.json", help="Ścieżka do pliku JSON ze zbiorem pytań")
+    parser.add_argument("--output", type=str, default="eval_results.json", help="Ścieżka do pliku wynikowego JSON")
+    args = parser.parse_args()
+
+    run_rag_evaluation(
+        mode=args.mode,
+        dataset_path=args.dataset,
+        output_json_path=args.output,
+        routing=args.routing
+    )

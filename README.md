@@ -1,16 +1,53 @@
 # KARIK – Hybrid Accounting & Tax Law RAG System (Polish Jurisdiction)
 
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111%2B-009688.svg)](https://fastapi.tiangolo.com)
-[![Celery](https://img.shields.io/badge/Celery-5.4-brightgreen.svg)](https://docs.celeryq.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Framework-009688.svg)](https://fastapi.tiangolo.com)
+[![Celery](https://img.shields.io/badge/Celery-Task%20Queue-brightgreen.svg)](https://docs.celeryq.dev/)
 [![PostgreSQL pgvector](https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791.svg)](https://github.com/pgvector/pgvector)
-[![Pytest](https://img.shields.io/badge/Tests-91%20Passed-success.svg)](https://docs.pytest.org/)
+[![CI](https://github.com/hrabiabarykent/karik-accounting-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/hrabiabarykent/karik-accounting-rag/actions/workflows/ci.yml)
 [![Jurisdiction: Poland](https://img.shields.io/badge/Jurisdiction-Poland%20%F0%9F%87%B5%F0%9F%87%B1-dc2626.svg)](https://isap.sejm.gov.pl/)
 [![License: Source-Available](https://img.shields.io/badge/License-Source--Available-amber.svg)](LICENSE)
 
-> 🇵🇱 **Dedicated to the Polish Tax & Accounting Legal System**: Purpose-built for the Polish jurisdiction, compliant with Polish GAAP (*Ustawa o Rachunkowości*), corporate & personal income taxes (CIT / PIT), goods and services tax (VAT), social security system (ZUS), the Polish Tax Code (*Ordynacja Podatkowa*), and native deterministic parsing of the Polish National e-Invoicing System (**KSeF XML FA(2)**).
+> 🇵🇱 **Dedicated to Polish Tax & Accounting Legal System**: Designed around selected Polish accounting and tax-law requirements, including Polish GAAP (*Ustawa o rachunkowości*), corporate & personal income taxes (CIT / PIT), goods and services tax (VAT), the social security system (ZUS), the Polish Tax Code (*Ordynacja podatkowa*), and native deterministic parsing of the Polish National e-Invoicing System (**KSeF XML FA(2)**).
 
-An asynchronous, production-grade hybrid accounting document processing system (PDF, PNG, JPEG, KSeF XML) combining a **Fail-Closed Privacy Layer with Scoped Egress Guard**, **Transactional Outbox & Attempt Leasing**, **Deterministic Financial Math Validation (Art. 106e VAT Act)**, and an **Advanced RAG Engine for Polish statutory legislation**.
+An asynchronous, production-oriented portfolio system featuring a production-inspired architecture with tested reliability and security mechanisms for hybrid accounting document processing (PDF, PNG, JPEG, KSeF XML). The system combines a **Fail-Closed Privacy Layer with Scoped Egress Guard**, **Transactional Outbox & Worker Attempt Leasing**, **Deterministic Financial Math Validation (Art. 106e VAT Act)**, and an **Advanced Hybrid RAG Engine for Polish statutory legislation**.
+
+> [!WARNING]
+> **Legal & Tax Disclaimer**: This project is an engineering and portfolio demonstration. It does not constitute certified legal, tax, or accounting advice, nor does it guarantee exhaustive statutory compliance for live enterprise reporting.
+
+---
+
+## 🚀 Quick Start
+
+Get the system running locally in minutes:
+
+### 1. Prerequisites
+- **Python**: 3.12+
+- **Container Runtime**: Docker Desktop (with Compose v2)
+- **Hardware Recommendations**:
+  - *Core / Cloud stack*: $\ge$ 8 GB RAM, standard x86_64 CPU.
+  - *Local ML stack (`all-local`)*: $\ge$ 16 GB RAM and an NVIDIA GPU with $\ge$ 6 GB VRAM (CUDA support for local Gemma SLM).
+- **Offline Polish NLP Models**: Downloaded via `python scripts/download_models.py` (or mounted via Docker volumes).
+- **Gemini Cloud Mode**: Requires a valid `GEMINI_API_KEY` configured in `.env`.
+- **Database Migrations**: Applied automatically on startup via `database/migrations/`.
+
+### 2. Setup & Run
+
+```bash
+# 1. Clone repository
+git clone https://github.com/hrabiabarykent/karik-accounting-rag.git
+cd karik-accounting-rag
+
+# 2. Configure environment variables
+copy .env.example .env     # On Windows (or: cp .env.example .env on Linux/macOS)
+# IMPORTANT: Edit .env and set KARIK_AUTH_SECRET (minimum 32 characters required)
+
+# 3. Start complete local stack with Docker
+docker compose --profile all-local up -d --build
+
+# 4. Run automated test suite
+python -m pytest tests/ -v
+```
 
 ---
 
@@ -64,9 +101,9 @@ graph TD
 | **Financial Math Engine** | Python `Decimal` (`ROUND_HALF_UP`) | Strict Polish VAT Act validation (Art. 106e: tax base sum vs line items sum, Modulo 11 NIP) |
 | **Privacy & Egress Guard** | Microsoft Presidio, spaCy (`pl_core_news_lg`), `ScopedEgressGuard` | Scoped fail-closed cloud egress guard guaranteeing 0 external calls on privacy failure |
 | **Vector DB & RAG** | PostgreSQL 16 with `pgvector` (HNSW) + Full-Text Search (`tsvector`) | Hybrid retrieval across Polish statutory acts with Reciprocal Rank Fusion (RRF $k=60$) |
-| **NLP Models (SOTA Polish)** | `sdadas/mmlw-e5-base` (Embeddings), `sdadas/polish-reranker-roberta-v3` (Reranker) | Semantic search and legal document re-ranking with Sigmoid normalization |
+| **Polish NLP Models** | `sdadas/mmlw-e5-base` (Embeddings), `sdadas/polish-reranker-roberta-v3` (Reranker) | Semantic search and legal document re-ranking with Sigmoid normalization |
 | **Cloud LLM** | Google Gemini API (`google.genai`), Context Caching | Suggested account classification (Wn/Ma, GTU) without amount mutation permissions |
-| **Testing & UI** | Pytest (**96 tests passed**), Streamlit, HTML5/JS UI | Unit, integration, security, and idempotency test suites |
+| **Testing & UI** | Pytest (137 passed tests), Streamlit, HTML5/JS UI | Comprehensive unit, integration, security, and idempotency test suites |
 
 ---
 
@@ -102,36 +139,107 @@ graph TD
 ## 📊 RAG Benchmark Metrics (Polish Tax Law)
 
 <!-- BENCHMARK_METRICS_START -->
-*Ostatnia ewaluacja benchmarku: `2026-09-10 12:03:29`* | *Liczba scenariuszy testowych: `15`*
+*Latest benchmark evaluation: `2026-09-11 09:23:30`* | *Evaluated test scenarios: `15`*
 
-### 🎯 Skuteczność Retrievalu i Pokrycia Cytowań
+### 🎯 Retrieval Performance & Citation Recall
 
-| Metryka Wyszukiwania | Poziom Artykułu | Poziom Ścisły (Exact) | Znaczenie Biznesowe |
+| Retrieval Metric | Article Level | Exact Level | Business Significance |
 | :--- | :---: | :---: | :--- |
-| **Hit Rate @ 1** | **60.0%** | **33.3%** | Odnalezienie właściwego przepisu na 1. pozycji |
-| **Hit Rate @ 3** | **66.7%** | **33.3%** | Obecność właściwego przepisu w Top 3 |
-| **Hit Rate @ 5** | **66.7%** | **33.3%** | Obecność właściwego przepisu w Top 5 |
-| **MRR (Mean Reciprocal Rank)** | **0.622** | **0.333** | Średnia odwrotność rangi pierwszego trafienia |
-| **Macro Citation Recall** | **66.7%** | — | Średnie pokrycie wymaganych jednostek redakcyjnych |
-| **Complete-Answer Rate** | **66.7%** | — | Odsetek pytań z kompletnym zestawem przepisów |
+| **Hit Rate @ 1** | **86.7%** | **60.0%** | Primary legal provision found at rank 1 |
+| **Hit Rate @ 3** | **100.0%** | **80.0%** | Primary legal provision found within Top 3 |
+| **Hit Rate @ 5** | **100.0%** | **80.0%** | Primary legal provision found within Top 5 |
+| **MRR (Mean Reciprocal Rank)** | **0.922** | **0.678** | Mean reciprocal rank of first relevant hit |
+| **Macro Citation Recall** | **100.0%** | — | Average recall of required statutory citations |
+| **Complete-Answer Rate** | **100.0%** | — | Percentage of questions with 100% citations retrieved |
 
-### 🧠 Jakość Generacji i Weryfikacja Ugruntowania
-- **Status ewaluacji generacji**: `not_run`
-- **Faithfulness (Wierność Semantyczna)**: `not_run` (brak wywołania LLM w trybie offline/CI)
-- **Heuristic Grounding Score**: `not_run` (brak wywołania LLM w trybie offline/CI)
+### 🧠 Generation Quality & Grounding Verification
+- **Generation evaluation status**: `not_run`
+- **Faithfulness**: `not_run` (no LLM calls during offline/CI evaluation)
+- **Heuristic Grounding Score**: `not_run` (no LLM calls during offline/CI evaluation)
 
-### 🏛️ Rozbicie Wyników per Akt Prawny
+### 🏛️ Breakdown by Statutory Act
 
-| Akt Prawny | Liczba Pytań | Hit Rate @ 3 | Complete-Answer | MRR |
+| Statutory Act | Questions Count | Hit Rate @ 3 | Complete-Answer | MRR |
 | :--- | :---: | :---: | :---: | :---: |
 | **CIT** | 3 | 100.0% | 100.0% | 1.000 |
-| **OP** | 1 | 0.0% | 0.0% | 0.000 |
-| **PIT** | 7 | 71.4% | 71.4% | 0.714 |
-| **PP** | 1 | 0.0% | 0.0% | 0.000 |
-| **UOR** | 2 | 50.0% | 50.0% | 0.500 |
-| **VAT** | 5 | 60.0% | 60.0% | 0.600 |
+| **OP** | 1 | 100.0% | 100.0% | 1.000 |
+| **PIT** | 7 | 100.0% | 100.0% | 0.929 |
+| **PP** | 1 | 100.0% | 100.0% | 1.000 |
+| **UOR** | 2 | 100.0% | 100.0% | 1.000 |
+| **VAT** | 5 | 100.0% | 100.0% | 1.000 |
 | **ZUS** | 1 | 100.0% | 100.0% | 0.333 |
 <!-- BENCHMARK_METRICS_END -->
+
+> [!NOTE]
+> The sum of questions in the statutory act breakdown above (3 + 1 + 7 + 1 + 2 + 5 + 1 = 20) exceeds the total of 15 questions in the Legacy set because multi-topic accounting questions cross-reference multiple statutes (e.g., cross-statutory citations spanning both PIT and *Ustawa o rachunkowości*, or *Ordynacja podatkowa* and VAT).
+
+### 🔬 Generalization Evaluation Across 3 Disjoint Datasets
+
+To mitigate the risk of overfitting, evaluation is split across three disjoint datasets under the default production mode (`routing=none`, neutral global retrieval without statutory act priors):
+
+| Dataset | System Role | Questions | Hit Rate @ 5 (Article) | Exact Hit @ 5 (Strict) | MRR | Target | Dataset Source | Benchmark Report |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Clean Retrieval Baseline** | Un-tuned baseline retriever | 15 | 60.0% | 33.3% | 0.5556 | Reference | [legacy_regression_15.json](dataset/legacy_regression_15.json) | — |
+| **Legacy Regression** | Frozen historical regression set | 15 | **100.0%** (15/15) | **80.0%** (12/15) | **0.9222** | $\ge$ 85% / $\ge$ 60% | [legacy_regression_15.json](dataset/legacy_regression_15.json) | [eval_results_retrieval_legacy15.json](eval_results_retrieval_legacy15.json) |
+| **Dev Tuning** | Parameter tuning & experimentation | 35 | **91.4%** (32/35) | **68.6%** (24/35) | **0.8400** | $\ge$ 85% / $\ge$ 60% | [dev_tuning_35.json](dataset/dev_tuning_35.json) | [eval_results_retrieval_dev35.json](eval_results_retrieval_dev35.json) |
+| **Held-Out Test** | Disjoint test set (unseen during tuning) | 35 | **91.4%** (32/35) | **68.6%** (24/35) | **0.8571** | $\ge$ 85% / $\ge$ 60% | [held_out_test_35.json](dataset/held_out_test_35.json) | [eval_results_retrieval_heldout35.json](eval_results_retrieval_heldout35.json) |
+
+* **Production Default (`routing=none`)**: Retrieval evaluates the entire statutory corpus globally without artificially biasing toward any detected act name. An optional experimental mode (`routing=boost`) can provide act biasing when explicit act hints are present, but the production pipeline operates cleanly without it.
+* **Stable Ranking & Tie-Breaking**: While HNSW approximate nearest neighbors is non-deterministic under concurrent writes, the pipeline uses a stable ranking configuration with `ef_search=100` (boosting recall to 98%+) and deterministic secondary tie-breaking on canonical `unit_id` to guarantee reproducible rankings across runs.
+
+### 🔍 Retrieval Query & Result Example
+
+The following trace illustrates how the hybrid pipeline resolves a practical tax inquiry without statutory act hints:
+
+**Query**:
+> *"W jakim terminie należy wystawić fakturę VAT po wykonaniu usługi lub dostawie towaru i kiedy najpóźniej powstaje obowiązek podatkowy?"*
+
+**Pipeline Execution**:
+1. **Dense Vector Search**: `sdadas/mmlw-e5-base` retrieves Top 75 candidates from pgvector HNSW (`ef_search=100`).
+2. **Lexical Full-Text Search**: PostgreSQL `tsvector` (`polish` config) retrieves Top 75 candidates matching terms (`termin wystawienia faktury`, `obowiązek podatkowy`).
+3. **Reciprocal Rank Fusion**: Merges both candidate pools ($k=60$) into a Top 40 reranking pool.
+4. **Cross-Encoder Reranking**: `sdadas/polish-reranker-roberta-v3` scores relevance with sigmoid normalization. Max 2 units per article deduplication applied.
+
+**Retrieved Candidates (Top 3)**:
+```json
+[
+  {
+    "rank": 1,
+    "unit_id": "pl:act:vat:art106i:ust1",
+    "act": "VAT (Ustawa o podatku od towarów i usług)",
+    "article": "Art. 106i",
+    "paragraph": "ust. 1",
+    "score": 0.942,
+    "snippet": "Fakturę wystawia się nie później niż 15. dnia miesiąca następującego po miesiącu, w którym dokonano dostawy towaru lub wykonano usługę..."
+  },
+  {
+    "rank": 2,
+    "unit_id": "pl:act:vat:art19a:ust1",
+    "act": "VAT (Ustawa o podatku od towarów i usług)",
+    "article": "Art. 19a",
+    "paragraph": "ust. 1",
+    "score": 0.897,
+    "snippet": "Obowiązek podatkowy powstaje z chwilą dokonania dostawy towarów lub wykonania usługi, z zastrzeżeniem ust. 5 i 7-11, art. 14 ust. 6..."
+  },
+  {
+    "rank": 3,
+    "unit_id": "pl:act:vat:art106i:ust7",
+    "act": "VAT (Ustawa o podatku od towarów i usług)",
+    "article": "Art. 106i",
+    "paragraph": "ust. 7",
+    "score": 0.815,
+    "snippet": "Faktury nie mogą być wystawione wcześniej niż 30. dnia przed dokonaniem dostawy towaru lub wykonaniem usługi..."
+  }
+]
+```
+
+### ⚠️ System Limitations & Scope
+
+- **Benchmark Size**: The held-out evaluation dataset consists of 35 targeted questions. While representative of common cross-statutory dilemmas, it does not represent an exhaustive corpus-wide benchmark.
+- **Retrieval-Focused Evaluation**: Benchmark metrics evaluate legal provision retrieval (Hit@K, Exact@K, MRR, citation recall). Downstream LLM answer generation and synthesis are not scored in automated CI runs (`generation: not_run`).
+- **No Certified Advice**: Retrieval of statutory provisions assists human operators but does not evaluate or guarantee the legal or tax validity of operational accounting advice.
+- **Statutory Corpus Snapshot**: The indexed legislation reflects a specific statutory cutoff date. Polish tax legislation changes frequently; amendments or ministerial decrees published after the snapshot date are not indexed.
+
 ---
 
 ## 📁 Project Structure
@@ -156,64 +264,80 @@ KARIK/
 │   └── update_readme_metrics.py# Automated benchmark metrics synchronization with CI --check
 ├── eval_rag.py                 # RAG evaluation benchmark suite for Polish tax law (strict LegalCitation model)
 ├── rag/                        # Advanced RAG core package (HNSW + FTS RRF)
-└── tests/                      # Automated Pytest suite (96 passed tests)
-    ├── test_stage1_contracts.py        # 7 contracts: no zero/dummy fallbacks, 503 unavail ERP, 409 conflict, RBAC
-    ├── test_multiprocess_persistence.py# 5 multi-process persistence, race condition & SQLite/Postgres config
-    ├── test_audit_critical_cases.py    # 6 critical audit test cases (idempotency, outbox, tenant isolation)
-    ├── test_ksef_and_decimal_math.py   # Decimal VAT math, KSeF FA(2), XXE, statutory article matching
-    ├── test_security_and_eval.py       # Streaming upload limits & 3-stage ERP export
-    ├── test_gateway.py                 # FastAPI endpoints & multi-tenant auth
-    ├── test_pipeline.py                # End-to-end pipeline execution & original file retention
-    ├── test_sanitizer.py               # Presidio PII masking & checksum validation
-    ├── test_citation_benchmark.py      # 8 LegalCitation model, non-Cartesian groups, and metrics tests
-    ├── test_readme_sync.py             # 6 README metrics synchronization and --check CLI tests
-    ├── test_postgres_config.py         # 4 centralized PostgreSQL credentials security tests
-    ├── test_rag_ingest_versioning.py   # 4 staged transactional ingest & versioning tests
-    └── test_model_manifest.py          # 5 offline NLP models SHA-256 manifest verification tests
+│   ├── db.py                   # PostgreSQL hybrid search, transactional staging, stable ranking & deterministic tie-breaking
+│   ├── parser.py               # LegalUnit hierarchical parser (Ustawa -> Artykuł -> Ustęp -> Punkt)
+│   ├── retriever.py            # Hybrid retrieval (75 cands), Cross-Encoder reranker, max 2 units/article deduplication
+│   └── units.py                # Canonical unit_id generator and act normalizer
+└── tests/                      # Automated Pytest suite (137 tests passed)
 ```
 
 ---
 
-## 🧪 Automated Testing & Benchmark Verification
+## 🧪 Automated Testing & Quality Assurance
 
-Execute the complete 96-test Pytest unit, integration, and security suite:
-```bash
-.\.venv\Scripts\python.exe -m pytest tests/ -v
-```
+The test suite covers 137 automated unit, integration, and security tests organized across major functional domains:
 
-Execute the Polish tax law RAG evaluation benchmark:
-```bash
-.\.venv\Scripts\python.exe eval_rag.py
-```
+* **Financial Math & Regulatory Validation** (`test_ksef_and_decimal_math.py`): Strict `Decimal` VAT calculation under Art. 106e, Modulo 11 NIP check digits, KSeF FA(2) XML parsing, and XXE injection resistance.
+* **Privacy & Egress Security** (`test_sanitizer.py`, `test_security_and_eval.py`): Presidio PII masking, Polish entity checksums, `ScopedEgressGuard` zero-egress enforcement, streaming upload limit enforcement (25 MB), and multi-tenant RBAC isolation.
+* **State Machine & Worker Persistence** (`test_multiprocess_persistence.py`, `test_production_readiness_*.py`, `test_stage1_contracts.py`): Transactional Outbox atomicity, `lease_token` concurrency fencing, retry backoff, sweeper reconciliation, and 3-stage ERP export lifecycle.
+* **RAG Engine & Legal DOM Hierarchy** (`test_parser_hierarchical.py`, `test_rag_ingest_versioning.py`, `test_citation_benchmark.py`): Hierarchical document parser, canonical `unit_id` generation, staged transactional ingest, atomic switchover, and citation metric validation.
+* **Infrastructure & CI Verification** (`test_gateway.py`, `test_docker_compose.py`, `test_docker_smoke.py`, `test_postgres_config.py`, `test_readme_sync.py`, `test_model_manifest.py`): Gateway endpoints, Docker Compose profiles, configuration security, offline model SHA-256 manifests, and Single-Source-of-Truth README metrics synchronization.
 
-Verify that `README.md` metrics match `eval_results.json` (used in CI):
-```bash
-.\.venv\Scripts\python.exe scripts/update_readme_metrics.py --check
-```
+### Test & Evaluation Commands
 
-Verify SHA-256 cryptographic checksums of offline NLP models:
 ```bash
-.\.venv\Scripts\python.exe scripts/download_models.py --verify-only
+# Execute full automated test suite (137 tests):
+python -m pytest tests/ -v
+
+# Run Legacy Regression benchmark (15 questions, default routing=none):
+python eval_rag.py --dataset dataset/legacy_regression_15.json
+
+# Run Held-Out Test benchmark (35 questions, unseen evaluation set):
+python eval_rag.py --dataset dataset/held_out_test_35.json
+
+# Verify README metrics synchronization with eval_results.json (CI check):
+python scripts/update_readme_metrics.py --check
+
+# Verify SHA-256 cryptographic checksums of offline NLP models:
+python scripts/download_models.py --verify-only
 ```
 
 ---
 
 ## 🐳 Docker Compose Profiles
 
-The services are compartmentalized into isolated profiles:
+The stack provides modular Docker Compose profiles tailored for different deployment environments:
+
+| Profile | Services Started | Description |
+| :--- | :--- | :--- |
+| `core` | `postgres-pgvector`, `redis-broker`, `app-module` | Core API gateway, PostgreSQL database, and Redis broker |
+| `ml` | `local-ai` | Dedicated local AI inference server (llama.cpp / Gemma SLM, CUDA GPU) |
+| `worker-cloud` | `postgres-pgvector`, `redis-broker`, `processing-worker-cloud` | Background processing worker utilizing cloud Gemini API |
+| `worker-local` | `postgres-pgvector`, `redis-broker`, `local-ai`, `processing-worker-local` | Background processing worker utilizing local Gemma SLM |
+| `all-cloud` | `postgres-pgvector`, `redis-broker`, `app-module`, `processing-worker-cloud` | Full stack using cloud LLM for suggestions |
+| `all-local` | `postgres-pgvector`, `redis-broker`, `local-ai`, `app-module`, `processing-worker-local` | 100% air-gapped, privacy-first local stack with GPU acceleration |
+
+### Launch Commands
+
 ```bash
-# Core services: PostgreSQL with pgvector, Redis, and FastAPI Gateway
+# Core services only (PostgreSQL + pgvector, Redis, FastAPI Gateway):
 docker compose --profile core up -d
 
-# Background Worker: Celery processing worker
-docker compose --profile worker up -d
+# Background worker using cloud Gemini API (requires GEMINI_API_KEY):
+docker compose --profile worker-cloud up -d
 
-# Machine Learning: Local AI / Gemma SLM (CUDA acceleration)
-docker compose --profile ml up -d
+# Background worker using local GPU model:
+docker compose --profile worker-local up -d
 
-# Complete production stack
-docker compose --profile all up -d
+# Complete stack with cloud LLM:
+docker compose --profile all-cloud up -d
+
+# Complete stack running 100% locally (offline, privacy-first):
+docker compose --profile all-local up -d
 ```
+
+> [!IMPORTANT]
+> **Authentication Secret Required**: The FastAPI gateway strictly validates `KARIK_AUTH_SECRET`. If this environment variable is missing from `.env` or shorter than 32 characters, the gateway raises a `RuntimeError` and refuses to start.
 
 ---
 

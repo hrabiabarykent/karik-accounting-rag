@@ -1,0 +1,103 @@
+{
+  "updated_at": "2026-09-10T17:47:45.913364",
+  "acts": {
+    "PIT": {
+      "key": "PIT",
+      "act_code": "PIT",
+      "file_name": "PIT.html",
+      "file_path": "C:\\Users\\P\\Documents\\Wolfik\\data\\pobrane_ustawy\\PIT.html",
+      "year": 2024,
+      "pos": 226,
+      "title": "Ustawa o podatku dochodowym od osób fizycznych",
+      "download_url": "https://api.sejm.gov.pl/eli/acts/DU/2024/226/text.html",
+      "sha256": "2dc0aa30789008337e9b1d433e5233ab74ec972ba0031045ab660416939f1627",
+      "size_bytes": 4171152,
+      "downloaded_at": "2026-09-10T17:47:47.686303",
+      "resolution_method": "verified_fallback"
+    },
+    "CIT": {
+      "key": "CIT",
+      "act_code": "CIT",
+      "file_name": "CIT.html",
+      "file_path": "C:\\Users\\P\\Documents\\Wolfik\\data\\pobrane_ustawy\\CIT.html",
+      "year": 2023,
+      "pos": 2805,
+      "title": "Ustawa o podatku dochodowym od osób prawnych",
+      "download_url": "https://api.sejm.gov.pl/eli/acts/DU/2023/2805/text.html",
+      "sha256": "893aa1a15458101266178bb8dbf10de4e29692a24b48dc081b3eb22215da8580",
+      "size_bytes": 4054661,
+      "downloaded_at": "2026-09-10T17:47:50.210779",
+      "resolution_method": "verified_fallback"
+    },
+    "VAT": {
+      "key": "VAT",
+      "act_code": "VAT",
+      "file_name": "VAT.html",
+      "file_path": "C:\\Users\\P\\Documents\\Wolfik\\data\\pobrane_ustawy\\VAT.html",
+      "year": 2024,
+      "pos": 361,
+      "title": "Ustawa o podatku od towarów i usług",
+      "download_url": "https://api.sejm.gov.pl/eli/acts/DU/2024/361/text.html",
+      "sha256": "60f9a86ba9f3fd6235f44a7883b1744e9396f0a659e72a068f8b3736a2a94db1",
+      "size_bytes": 4961725,
+      "downloaded_at": "2026-09-10T17:47:52.526607",
+      "resolution_method": "verified_fallback"
+    },
+    "OP": {
+      "key": "Ordynacja_Podatkowa",
+      "act_code": "OP",
+      "file_name": "Ordynacja_Podatkowa.html",
+      "file_path": "C:\\Users\\P\\Documents\\Wolfik\\data\\pobrane_ustawy\\Ordynacja_Podatkowa.html",
+      "year": 2022,
+      "pos": 2651,
+      "title": "Obwieszczenie Marszałka Sejmu Rzeczypospolitej Polskiej z dnia 1 grudnia 2022 r. w sprawie ogłoszenia jednolitego tekstu ustawy - Ordynacja podatkowa",
+      "download_url": "https://api.sejm.gov.pl/eli/acts/DU/2022/2651/text.html",
+      "sha256": "d65a640fd2f2b893efd131a1a50333bd3a8b934b19823bcbdd70a12ac18be8a1",
+      "size_bytes": 4078388,
+      "downloaded_at": "2026-09-10T17:47:55.267339",
+      "resolution_method": "dynamic_eli_search"
+    },
+    "UOR": {
+      "key": "UoR_Rachunkowosc",
+      "act_code": "UOR",
+      "file_name": "UoR_Rachunkowosc.html",
+      "file_path": "C:\\Users\\P\\Documents\\Wolfik\\data\\pobrane_ustawy\\UoR_Rachunkowosc.html",
+      "year": 2023,
+      "pos": 120,
+      "title": "Ustawa o rachunkowości",
+      "download_url": "https://api.sejm.gov.pl/eli/acts/DU/2023/120/text.html",
+      "sha256": "b6066b406994b45e2fda9c804e76f0d81a07577921f65cb093dbafcabc376d10",
+      "size_bytes": 1963732,
+      "downloaded_at": "2026-09-10T17:47:56.595345",
+      "resolution_method": "verified_fallback"
+    },
+    "ZUS": {
+      "key": "ZUS_System_Ubezpieczen",
+      "act_code": "ZUS",
+      "file_name": "ZUS_System_Ubezpieczen.html",
+      "file_path": "C:\\Users\\P\\Documents\\Wolfik\\data\\pobrane_ustawy\\ZUS_System_Ubezpieczen.html",
+      "year": 2024,
+      "pos": 497,
+      "title": "Ustawa o systemie ubezpieczeń społecznych",
+      "download_url": "https://api.sejm.gov.pl/eli/acts/DU/2024/497/text.html",
+      "sha256": "e505b82802ae97158908249faaf05deb4a3eccbef7e465ecc08bc17b0f95660f",
+      "size_bytes": 1948236,
+      "downloaded_at": "2026-09-10T17:47:58.476650",
+      "resolution_method": "verified_fallback"
+    },
+    "PP": {
+      "key": "Prawo_Przedsiebiorcow",
+      "act_code": "PP",
+      "file_name": "Prawo_Przedsiebiorcow.html",
+      "file_path": "C:\\Users\\P\\Documents\\Wolfik\\data\\pobrane_ustawy\\Prawo_Przedsiebiorcow.html",
+      "year": 2024,
+      "pos": 236,
+      "title": "Obwieszczenie Marszałka Sejmu Rzeczypospolitej Polskiej z dnia 9 lutego 2024 r. w sprawie ogłoszenia jednolitego tekstu ustawy - Prawo przedsiębiorców",
+      "download_url": "https://api.sejm.gov.pl/eli/acts/DU/2024/236/text.html",
+      "sha256": "ae884180d6851d921bf850ee10261060bc2faeedff3ef4b8a9c55a984196295f",
+      "size_bytes": 480467,
+      "downloaded_at": "2026-09-10T17:48:00.044679",
+      "resolution_method": "dynamic_eli_search"
+    }
+  }
+}

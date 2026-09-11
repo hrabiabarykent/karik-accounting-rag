@@ -1,0 +1,1606 @@
+{
+  "timestamp": "2026-09-11 09:16:46",
+  "evaluation_mode": "retrieval",
+  "routing_mode": "none",
+  "dataset_source": "dataset/held_out_test_35.json",
+  "total_questions": 35,
+  "elapsed_seconds": 43.25,
+  "metrics": {
+    "hit_rate_at_1": 0.8,
+    "hit_rate_at_3": 0.9143,
+    "hit_rate_at_5": 0.9143,
+    "mrr": 0.8571,
+    "hit_rate_at_1_exact": 0.5143,
+    "hit_rate_at_3_exact": 0.6857,
+    "hit_rate_at_5_exact": 0.6857,
+    "mrr_exact": 0.6,
+    "macro_citation_recall": 0.9143,
+    "complete_answer_rate": 0.9143,
+    "generation": {
+      "status": "not_run",
+      "evaluated_questions": 0,
+      "faithfulness": null,
+      "heuristic_grounding_score": null
+    },
+    "faithfulness": null
+  },
+  "metrics_by_act": {
+    "CIT": {
+      "questions_count": 5,
+      "hit_rate_at_1": 0.6,
+      "hit_rate_at_3": 0.6,
+      "hit_rate_at_5": 0.6,
+      "mrr": 0.6,
+      "complete_answer_rate": 0.6,
+      "macro_recall": 0.6
+    },
+    "OP": {
+      "questions_count": 5,
+      "hit_rate_at_1": 0.8,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "mrr": 0.9,
+      "complete_answer_rate": 1.0,
+      "macro_recall": 1.0
+    },
+    "PIT": {
+      "questions_count": 5,
+      "hit_rate_at_1": 0.6,
+      "hit_rate_at_3": 0.8,
+      "hit_rate_at_5": 0.8,
+      "mrr": 0.7,
+      "complete_answer_rate": 0.8,
+      "macro_recall": 0.8
+    },
+    "PP": {
+      "questions_count": 5,
+      "hit_rate_at_1": 0.8,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "mrr": 0.9,
+      "complete_answer_rate": 1.0,
+      "macro_recall": 1.0
+    },
+    "UOR": {
+      "questions_count": 5,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "mrr": 1.0,
+      "complete_answer_rate": 1.0,
+      "macro_recall": 1.0
+    },
+    "VAT": {
+      "questions_count": 5,
+      "hit_rate_at_1": 0.8,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "mrr": 0.9,
+      "complete_answer_rate": 1.0,
+      "macro_recall": 1.0
+    },
+    "ZUS": {
+      "questions_count": 5,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "mrr": 1.0,
+      "complete_answer_rate": 1.0,
+      "macro_recall": 1.0
+    }
+  },
+  "detailed_results": [
+    {
+      "id": 201,
+      "category": "VAT - Stawka podstawowa",
+      "query": "Jaka jest podstawowa stawka podatku od towarów i usług w Polsce i na podstawie którego artykułu obowiązuje?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "41",
+        "146ef"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "any",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "41",
+              "paragraph": "1",
+              "point": null
+            },
+            {
+              "act": "VAT",
+              "article": "146ef",
+              "paragraph": "1",
+              "point": "1"
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "VAT Art. 41 ust. 13",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 202,
+      "category": "VAT - Termin wystawienia faktury",
+      "query": "Do którego dnia miesiąca następującego po miesiącu dostawy towaru lub wykonania usługi należy wystawić fakturę VAT?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "106i"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "106i",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "VAT Art. 106i ust. 1",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 203,
+      "category": "VAT - Wewnątrzwspólnotowa dostawa towarów WDT",
+      "query": "Czym jest wewnątrzwspólnotowa dostawa towarów WDT w rozumieniu przepisów ustawy o podatku od towarów i usług?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "13"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "13",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "VAT Art. 13 ust. 1",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 204,
+      "category": "VAT - Mały podatnik metoda kasowa",
+      "query": "Na czym polega metoda kasowa rozliczania podatku VAT dostępna dla małych podatników?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "21"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "21",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 0.5,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "VAT Art. 99 ust. 2",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 205,
+      "category": "VAT - Termin odliczenia VAT naliczonego",
+      "query": "W jakim terminie powstaje prawo do obniżenia kwoty podatku należnego o kwotę podatku naliczonego w VAT?",
+      "expected_act": [
+        "VAT"
+      ],
+      "expected_articles": [
+        "86"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "VAT",
+              "article": "86",
+              "paragraph": "10",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "VAT Art. 86 ust. 10",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 206,
+      "category": "CIT - Odliczenie straty podatkowej",
+      "query": "Na jakich zasadach podatnik CIT może obniżyć dochód o wysokość straty ze źródła przychodów poniesionej w latach ubiegłych?",
+      "expected_act": [
+        "CIT"
+      ],
+      "expected_articles": [
+        "7"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "CIT",
+              "article": "7",
+              "paragraph": "5",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "CIT Art. 7 ust. 5 pkt 2",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 207,
+      "category": "CIT - Przychody z zysków kapitałowych",
+      "query": "Jakie kategorie przychodów ustawa o CIT kwalifikuje do odrębnego źródła przychodów z zysków kapitałowych?",
+      "expected_act": [
+        "CIT"
+      ],
+      "expected_articles": [
+        "7b"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "CIT",
+              "article": "7b",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "CIT Art. 7b ust. 1 pkt 1 lit. a",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 208,
+      "category": "CIT - Podatek od przychodów z budynków",
+      "query": "Kiedy powstaje obowiązek zapłaty minimalnego podatku dochodowego od przychodów z budynków o wartości początkowej przekraczającej 10 mln zł?",
+      "expected_act": [
+        "CIT"
+      ],
+      "expected_articles": [
+        "24b"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "CIT",
+              "article": "24b",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PIT Art. 22e ust. 1",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 209,
+      "category": "CIT - Darowizny odliczane od dochodu",
+      "query": "Jaki jest limit odliczenia darowizn na cele pożytku publicznego i kultu religijnego od podstawy opodatkowania w CIT?",
+      "expected_act": [
+        "CIT"
+      ],
+      "expected_articles": [
+        "18"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "CIT",
+              "article": "18",
+              "paragraph": "1",
+              "point": "1"
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 0.5,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "CIT Art. 18 ust. 1 pkt 7",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 210,
+      "category": "CIT - Podatek u źródła odsetki i licencje",
+      "query": "Jaka jest podstawowa stawka podatku dochodowego u źródła od wypłacanych zagranicznym podmiotom odsetek i praw autorskich wg CIT?",
+      "expected_act": [
+        "CIT"
+      ],
+      "expected_articles": [
+        "21"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "CIT",
+              "article": "21",
+              "paragraph": "1",
+              "point": "1"
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "CIT Art. 24a ust. 1",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 211,
+      "category": "PIT - Wspólne opodatkowanie małżonków",
+      "query": "Jakie warunki muszą spełnić małżonkowie, aby móc złożyć wspólne roczne zeznanie podatkowe w PIT?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "6"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "6",
+              "paragraph": "2",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 0.5,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PIT Art. 6a ust. 1",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 212,
+      "category": "PIT - Podatek Belki kapitały pieniężne",
+      "query": "Ile wynosi stawka podatku dochodowego od zysków kapitałowych i odsetek z rachunków bankowych tzw. podatek Belki w PIT?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "30b"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "30b",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 0,
+      "hit_rate_5": 0,
+      "reciprocal_rank": 0.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 0.0,
+      "macro_recall": 0.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PIT Art. 30a ust. 1 pkt 3",
+      "top_rerank_score": 0.7308
+    },
+    {
+      "id": 213,
+      "category": "PIT - Diety w podróży służbowej",
+      "query": "Do jakiej wysokości diety i inne należności za czas podróży służbowej pracownika są zwolnione od podatku dochodowego PIT?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "21"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "21",
+              "paragraph": "1",
+              "point": "16"
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PIT Art. 21 ust. 1 pkt 17",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 214,
+      "category": "PIT - Ulga mieszkaniowa",
+      "query": "W jakim terminie należy wydatkować przychód ze sprzedaży nieruchomości na własne cele mieszkaniowe, aby skorzystać ze zwolnienia z PIT?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "21"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "21",
+              "paragraph": "1",
+              "point": "131"
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PIT Art. 21 ust. 1 pkt 131",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 215,
+      "category": "PIT - Ulga rehabilitacyjna",
+      "query": "Jakie wydatki na cele rehabilitacyjne oraz związane z ułatwieniem wykonywania czynności życiowych podlegają odliczeniu od dochodu w PIT?",
+      "expected_act": [
+        "PIT"
+      ],
+      "expected_articles": [
+        "26"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PIT",
+              "article": "26",
+              "paragraph": "7a",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 0.5,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PIT Art. 26 ust. 1 pkt 6",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 216,
+      "category": "Ordynacja - Korekta deklaracji",
+      "query": "Na jakich zasadach i w jakim terminie podatnik ma prawo skorygować uprzednio złożoną deklarację podatkową?",
+      "expected_act": [
+        "OP"
+      ],
+      "expected_articles": [
+        "81"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "OP",
+              "article": "81",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 0.5,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 0.5,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "OP Art. 81b ust. 1a",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 217,
+      "category": "Ordynacja - Tajemnica skarbowa",
+      "query": "Jakie informacje i dane zebrane w toku postępowania podatkowego podlegają rygorowi tajemnicy skarbowej?",
+      "expected_act": [
+        "OP"
+      ],
+      "expected_articles": [
+        "293"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "OP",
+              "article": "293",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "OP Art. 293 ust. 1",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 218,
+      "category": "Ordynacja - Zawieszenie przedawnienia",
+      "query": "W jakich okolicznościach następuje zawieszenie biegu terminu przedawnienia zobowiązania podatkowego z uwagi na wszczęcie postępowania karnego skarbowego?",
+      "expected_act": [
+        "OP"
+      ],
+      "expected_articles": [
+        "70"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "OP",
+              "article": "70",
+              "paragraph": "6",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "OP Art. 70 ust. 6 pkt 1",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 219,
+      "category": "Ordynacja - Nadpłata podatku",
+      "query": "Co stanowi nadpłatę podatku w rozumieniu przepisów Ordynacji podatkowej?",
+      "expected_act": [
+        "OP"
+      ],
+      "expected_articles": [
+        "72"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "OP",
+              "article": "72",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "OP Art. 72 ust. 1 pkt 2",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 220,
+      "category": "Ordynacja - Moc ochronna interpretacji",
+      "query": "Na czym polega zasada nieszkodzenia i funkcja gwarancyjna wynikająca z zastosowania się do wydanej interpretacji indywidualnej?",
+      "expected_act": [
+        "OP"
+      ],
+      "expected_articles": [
+        "14k"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "OP",
+              "article": "14k",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "OP Art. 14k ust. 1",
+      "top_rerank_score": 0.7309
+    },
+    {
+      "id": 221,
+      "category": "UoR - Polityka rachunkowości",
+      "query": "Co powinna zawierać dokumentacja opisująca przyjęte przez jednostkę zasady polityki rachunkowości?",
+      "expected_act": [
+        "UOR"
+      ],
+      "expected_articles": [
+        "10"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "UOR",
+              "article": "10",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "UOR Art. 10 ust. 1 pkt 3 lit. c",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 222,
+      "category": "UoR - Amortyzacja bilansowa",
+      "query": "Jak ustala się okres i stawkę amortyzacji środków trwałych dla celów bilansowych w myśl Ustawy o Rachunkowości?",
+      "expected_act": [
+        "UOR"
+      ],
+      "expected_articles": [
+        "32"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "UOR",
+              "article": "32",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "UOR Art. 32 ust. 2",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 223,
+      "category": "UoR - Zatwierdzenie sprawozdania finansowego",
+      "query": "W jakim terminie organ zatwierdzający ma obowiązek zatwierdzić roczne sprawozdanie finansowe jednostki?",
+      "expected_act": [
+        "UOR"
+      ],
+      "expected_articles": [
+        "53"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "UOR",
+              "article": "53",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "UOR Art. 53 ust. 1",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 224,
+      "category": "UoR - Złożenie sprawozdania do KRS",
+      "query": "W jakim terminie od dnia zatwierdzenia rocznego sprawozdania finansowego kierownik jednostki ma obowiązek złożyć je we właściwym rejestrze sądowym?",
+      "expected_act": [
+        "UOR"
+      ],
+      "expected_articles": [
+        "69"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "UOR",
+              "article": "69",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "UOR Art. 69 ust. 1",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 225,
+      "category": "UoR - Definicja środków trwałych",
+      "query": "Jakie warunki musi spełniać składnik majątku, aby został zakwalifikowany jako środek trwały w Ustawie o Rachunkowości?",
+      "expected_act": [
+        "UOR"
+      ],
+      "expected_articles": [
+        "3"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "UOR",
+              "article": "3",
+              "paragraph": "1",
+              "point": "15"
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "UOR Art. 3 ust. 4 pkt 7",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 226,
+      "category": "ZUS - Podstawa wymiaru składek pracowników",
+      "query": "Co stanowi podstawę wymiaru składek na ubezpieczenia emerytalne i rentowe pracowników podlegających obowiązkowemu ubezpieczeniu?",
+      "expected_act": [
+        "ZUS"
+      ],
+      "expected_articles": [
+        "18"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "ZUS",
+              "article": "18",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 0.5,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "ZUS Art. 18 ust. 8b",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 227,
+      "category": "ZUS - Wyrejestrowanie ubezpieczonego",
+      "query": "W jakim terminie od dnia ustania tytułu do ubezpieczeń płatnik składek ma obowiązek wyrejestrować osobę z ubezpieczeń w ZUS?",
+      "expected_act": [
+        "ZUS"
+      ],
+      "expected_articles": [
+        "36"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "ZUS",
+              "article": "36",
+              "paragraph": "11",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "ZUS Art. 36 ust. 11",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 228,
+      "category": "ZUS - Odpowiedzialność za nieopłacenie składek",
+      "query": "Jakie sankcje i odsetki za zwłokę stosuje się w razie nieopłacenia składek na ubezpieczenia społeczne w ustawowym terminie?",
+      "expected_act": [
+        "ZUS"
+      ],
+      "expected_articles": [
+        "23"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "ZUS",
+              "article": "23",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 0.5,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "ZUS Art. 23 ust. 1f",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 229,
+      "category": "ZUS - Finansowanie składek emerytalnych",
+      "query": "W jakiej części składka na ubezpieczenie emerytalne pracownika jest finansowana przez ubezpieczonego, a w jakiej przez płatnika składek?",
+      "expected_act": [
+        "ZUS"
+      ],
+      "expected_articles": [
+        "16"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "ZUS",
+              "article": "16",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "ZUS Art. 16 ust. 1b",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 230,
+      "category": "ZUS - Stopa procentowa składek",
+      "query": "Ile wynosi łączna stopa procentowa składki na ubezpieczenie emerytalne i rentowe określona w ustawie o systemie ubezpieczeń społecznych?",
+      "expected_act": [
+        "ZUS"
+      ],
+      "expected_articles": [
+        "22"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "ZUS",
+              "article": "22",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "ZUS Art. 22 ust. 1 pkt 2",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 231,
+      "category": "PP - Zasada in dubio pro libertate",
+      "query": "Na czym polega zasada przyjaznej interpretacji przepisów prawa in dubio pro libertate określona w Prawie Przedsiębiorców?",
+      "expected_act": [
+        "PP"
+      ],
+      "expected_articles": [
+        "11"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PP",
+              "article": "11",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 0,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 0.5,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 0.5,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PP Art. 10 ust. 1",
+      "top_rerank_score": 0.7303
+    },
+    {
+      "id": 232,
+      "category": "PP - Zakaz podwójnej kontroli",
+      "query": "Czy organ kontroli może prowadzić więcej niż jedną kontrolę działalności gospodarczej przedsiębiorcy w tym samym czasie?",
+      "expected_act": [
+        "PP"
+      ],
+      "expected_articles": [
+        "54"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PP",
+              "article": "54",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PP Art. 54 ust. 1 pkt 2",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 233,
+      "category": "PP - Definicja działalności gospodarczej",
+      "query": "Jak ustawa Prawo Przedsiębiorców definiuje działalność gospodarczą?",
+      "expected_act": [
+        "PP"
+      ],
+      "expected_articles": [
+        "3"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PP",
+              "article": "3",
+              "paragraph": null,
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PP Art. 3",
+      "top_rerank_score": 0.7311
+    },
+    {
+      "id": 234,
+      "category": "PP - Książka kontroli",
+      "query": "Jaki dokument ma obowiązek prowadzić przedsiębiorca w celu ewidencjonowania przeprowadzanych kontroli gospodarczych?",
+      "expected_act": [
+        "PP"
+      ],
+      "expected_articles": [
+        "57"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PP",
+              "article": "57",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 1,
+      "hit_rate_3_exact": 1,
+      "hit_rate_5_exact": 1,
+      "reciprocal_rank_exact": 1.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PP Art. 57 ust. 1",
+      "top_rerank_score": 0.731
+    },
+    {
+      "id": 235,
+      "category": "PP - Sprzeciw wobec czynności kontrolnych",
+      "query": "W jakim terminie przedsiębiorca może wnieść sprzeciw wobec podjęcia i wykonywania czynności kontrolnych z naruszeniem przepisów prawa?",
+      "expected_act": [
+        "PP"
+      ],
+      "expected_articles": [
+        "59"
+      ],
+      "expected_citation_groups": [
+        {
+          "mode": "all",
+          "citations": [
+            {
+              "act": "PP",
+              "article": "59",
+              "paragraph": "1",
+              "point": null
+            }
+          ]
+        }
+      ],
+      "hit_rate_1": 1,
+      "hit_rate_3": 1,
+      "hit_rate_5": 1,
+      "reciprocal_rank": 1.0,
+      "hit_rate_1_exact": 0,
+      "hit_rate_3_exact": 0,
+      "hit_rate_5_exact": 0,
+      "reciprocal_rank_exact": 0.0,
+      "complete_answer": 1.0,
+      "macro_recall": 1.0,
+      "generation": {
+        "status": "not_run",
+        "faithfulness": null,
+        "heuristic_grounding_score": null,
+        "lexical_similarity": null
+      },
+      "faithfulness": null,
+      "top_retrieved_article": "PP Art. 59 ust. 4",
+      "top_rerank_score": 0.7311
+    }
+  ]
+}

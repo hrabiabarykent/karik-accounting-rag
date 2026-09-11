@@ -93,7 +93,7 @@ def test_generate_metrics_markdown_offline_not_run(sample_eval_results):
 
     md = generate_metrics_markdown(sample_eval_results)
     assert "not_run" in md
-    assert "brak wywołania LLM" in md
+    assert "no LLM calls" in md
 
 
 def test_update_readme_flow(tmp_path, sample_eval_results):

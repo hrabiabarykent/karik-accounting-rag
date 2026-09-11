@@ -132,7 +132,7 @@ def build_prompt_and_context(user_query: str) -> Dict[str, Any]:
     logger.info(f"Krok 2: Pobieranie kontekstu z bazy pgvector dla frazy: '{search_query[:100]}...'")
     retrieved_articles = retrieve_and_rerank(
         query=search_query,
-        top_k=4,
+        top_k=5,
         score_threshold=0.0
     )
 
@@ -166,18 +166,22 @@ Wygeneruj odpowiedź wyłącznie w czystym formacie JSON:
     top_score = retrieved_articles[0].get("rerank_score", 0.0) if retrieved_articles else 0.0
 
     cited_articles_metadata = []
-    for art in retrieved_articles[:3]:
+    for art in retrieved_articles:
         act = art.get("act_code", "USTAWA")
         art_num = art.get("article_number", "")
         link = generate_article_file_link(act, art_num)
         cited_articles_metadata.append({
             "act_code": act,
             "article_number": art_num,
+            "paragraph": art.get("paragraph"),
+            "point": art.get("point"),
+            "letter": art.get("letter"),
+            "unit_id": art.get("unit_id"),
+            "unit_type": art.get("unit_type"),
             "full_title": art.get("full_title", f"{act} Art. {art_num}"),
             "rerank_score": art.get("rerank_score", 0.0),
             "file_link": link,
             "text": art.get("content") or art.get("clean_text") or art.get("chunk_text") or ""
-
         })
 
 

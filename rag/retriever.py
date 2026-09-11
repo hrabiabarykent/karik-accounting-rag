@@ -68,13 +68,31 @@ def get_reranker():
 
 
 
+def _sanitize_vector(vec: Any) -> List[float]:
+    """Zastępuje wartości NaN oraz Inf zerami i konwertuje na listę floatów."""
+    if hasattr(vec, "tolist"):
+        vec = vec.tolist()
+    clean = []
+    has_bad = False
+    for x in vec:
+        fx = float(x)
+        if math.isnan(fx) or math.isinf(fx):
+            clean.append(0.0)
+            has_bad = True
+        else:
+            clean.append(fx)
+    if has_bad:
+        logger.warning("Wykryto i oczyszczono wartości NaN/Inf w wygenerowanym wektorze.")
+    return clean
+
+
 def generate_embedding(text: str) -> List[float]:
     """Generuje wektor dla pojedynczego tekstu."""
     embedder = get_embedder()
     if "e5" in MODEL_NAME.lower():
         text = f"passage: {text}"
     vector = embedder.encode(text, normalize_embeddings=True)
-    return vector.tolist()
+    return _sanitize_vector(vector)
 
 def generate_embeddings_batch(texts: List[str], batch_size: int = 32) -> List[List[float]]:
     """Szybkie, wsadowe generowanie wektorów dla listy tekstów (używane podczas ingestu)."""
@@ -85,7 +103,7 @@ def generate_embeddings_batch(texts: List[str], batch_size: int = 32) -> List[Li
         formatted_texts = texts
     
     vectors = embedder.encode(formatted_texts, batch_size=batch_size, normalize_embeddings=True)
-    return [v.tolist() for v in vectors]
+    return [_sanitize_vector(v) for v in vectors]
 
 def generate_query_embedding(query: str) -> List[float]:
     """Generuje wektor dla zapytania użytkownika."""
@@ -93,47 +111,84 @@ def generate_query_embedding(query: str) -> List[float]:
     if "e5" in MODEL_NAME.lower():
         query = f"query: {query}"
     vector = embedder.encode(query, normalize_embeddings=True)
-    return vector.tolist()
+    return _sanitize_vector(vector)
 
-def retrieve_and_rerank(query: str, top_k: int = 5, score_threshold: float = 0.70) -> List[Dict[str, Any]]:
+def retrieve_and_rerank(
+    query: str,
+    top_k: int = 5,
+    score_threshold: float = 0.0,
+    enable_act_bias: bool = False
+) -> List[Dict[str, Any]]:
     """
-    1. Generuje embedding zapytania.
-    2. Wykonuje wyszukiwanie hybrydowe w pgvector (HNSW + FTS RRF).
-    3. Przeprowadza ocenę Cross-Encoderem z normalizacją Sigmoid i odrzuca dokumenty poniżej score_threshold.
+    1. Generuje embedding zapytania (na CUDA jeśli dostępne).
+    2. Wykonuje wyszukiwanie hybrydowe w pgvector (HNSW + FTS RRF) pobierając 75 kandydatów.
+    3. Przeprowadza ocenę Cross-Encoderem z normalizacją Sigmoid i opcjonalnym routing boostem.
+    4. Deterministycznie sortuje i deduplikuje jednostki (maksymalnie 2 jednostki na artykuł w Top K).
     """
-    from rag.db import search_hybrid_db
+    from rag.db import search_hybrid_db, detect_act_bias
 
     if not query or not query.strip():
         return []
 
     query_clean = query.strip()
     query_vec = generate_query_embedding(query_clean)
-    candidates = search_hybrid_db(query_embedding=query_vec, query_text=query_clean, top_k=top_k * 3)
+    candidates = search_hybrid_db(
+        query_embedding=query_vec,
+        query_text=query_clean,
+        top_k=75,
+        enable_act_bias=enable_act_bias
+    )
 
     if not candidates:
         return []
 
+    bias_act = detect_act_bias(query_clean) if enable_act_bias else None
     reranker = get_reranker()
     if reranker:
-        # Przekazujemy pełną treść artykułu (do 8000 znaków) dzięki oknu kontekstowemu 8192 tokenów w polish-reranker-roberta-v3
-        pairs = [[query_clean, (cand.get("content") or "")[:8000]] for cand in candidates]
+        pairs = [[query_clean, f"{cand.get('full_title', '')}\n{(cand.get('content') or cand.get('clean_text') or '')[:2500]}"] for cand in candidates]
         raw_scores = reranker.predict(pairs)
 
-
         for i, cand in enumerate(candidates):
-            # Normalizacja surowych logitów do zakresu [0.0, 1.0] za pomocą funkcji Sigmoid
             raw_val = float(raw_scores[i])
             prob_val = sigmoid(raw_val)
+            boost = 0.03 if (bias_act and cand.get("act_code") == bias_act) else 0.0
             cand["rerank_raw_score"] = raw_val
-            cand["rerank_score"] = round(prob_val, 4)
+            cand["sort_score"] = prob_val + boost
+            cand["rerank_score"] = round(prob_val + boost, 4)
 
-        # Filtrowanie wedle progu istotności RODO / Grounding (> 0.70)
-        filtered = [c for c in candidates if c.get("rerank_score", 0.0) >= score_threshold]
-        filtered.sort(key=lambda x: x.get("rerank_score", 0.0), reverse=True)
-        return filtered[:top_k]
+        # Deterministyczne sortowanie ze stabilnym tie-breakerem po unit_id ASC
+        candidates.sort(key=lambda x: x.get("unit_id") or "")
+        candidates.sort(
+            key=lambda x: (
+                x.get("sort_score", 0.0),
+                float(x.get("rrf_score", 0.0) or 0.0)
+            ),
+            reverse=True
+        )
     else:
-        # Fallback jeśli Cross-Encoder nie jest dostępny
         for cand in candidates:
+            cand["sort_score"] = float(cand.get("rrf_score", 0.0))
             cand["rerank_score"] = round(float(cand.get("rrf_score", 0.0)), 4)
-        return candidates[:top_k]
+        candidates.sort(key=lambda x: x.get("unit_id") or "")
+        candidates.sort(
+            key=lambda x: (
+                x.get("sort_score", 0.0),
+                float(x.get("rrf_score", 0.0) or 0.0)
+            ),
+            reverse=True
+        )
 
+    # Filtrowanie wedle progu oraz deduplikacja: max 2 jednostki z tego samego artykułu
+    deduped = []
+    art_counts = {}
+    for cand in candidates:
+        if cand.get("rerank_score", 0.0) < score_threshold:
+            continue
+        key = (cand.get("act_code"), str(cand.get("article_number", "")))
+        if art_counts.get(key, 0) < 2:
+            deduped.append(cand)
+            art_counts[key] = art_counts.get(key, 0) + 1
+        if len(deduped) >= top_k:
+            break
+
+    return deduped
